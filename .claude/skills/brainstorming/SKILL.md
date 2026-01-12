@@ -40,13 +40,15 @@ CHECK DRAFTS → INTAKE → CLARIFY → SCOUT → FINALIZE
 
 ## Argument Parsing
 
-Parse from args:
+Skill receives `args` from Skill tool (passed by command wrapper).
+
+Parse `args` to extract:
 
 - `request` - User's initial request or description
 - `--resume {feature_id}` - Resume a specific draft spec
 
 ```
-Parse "$ARGUMENTS":
+Parse args:
   if contains "--resume":
     resume_mode = true
     feature_id = extract value after "--resume"

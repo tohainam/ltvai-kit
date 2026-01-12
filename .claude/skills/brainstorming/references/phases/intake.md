@@ -16,13 +16,19 @@ Receive input and create draft spec file immediately.
 
 ### 3. Generate Spec Name
 
-Use naming skill logic:
+Use naming skill to generate spec filename:
 
-- Extract 2-3 key concepts
+```
+Skill(skill: "naming", args: "{user_request}")
+```
+
+The naming skill will:
+
+- Extract 2-3 key concepts from the request
 - Format: kebab-case, lowercase
 - Max 30 characters
-- Check uniqueness in `.claude/.specs/`
 
+After receiving the generated name, check uniqueness in `.claude/.specs/`.
 If name already exists, append numeric suffix (`-2`, `-3`, etc.)
 
 ### 4. Create Draft Spec

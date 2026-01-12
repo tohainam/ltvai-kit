@@ -11,28 +11,30 @@ Unified coding workflow for structured development tasks.
 
 ## Argument Parsing
 
-Parse from args:
+Skill receives `args` from Skill tool (passed by command wrapper).
 
-1. `--mode=full` or `--mode=fast` (required, from command wrapper)
+Parse `args` to extract:
+
+1. `--mode=full` or `--mode=fast` (required, added by command)
 2. `--auto` flag (optional, from user)
-3. `task_description` (remaining args after flags)
+3. `task_description` (remaining text after flags)
 
 ```
-Parse "$ARGUMENTS":
+Parse args:
   if contains "--auto":
     auto_mode = true
-    remove "--auto" from args
+    remove "--auto"
   else:
     auto_mode = false
 
   if contains "--mode=fast":
     mode = "fast"
-    remove "--mode=fast" from args
+    remove "--mode=fast"
   else:
     mode = "full"  # default
-    remove "--mode=full" from args if present
+    remove "--mode=full" if present
 
-  task_description = remaining args
+  task_description = remaining text
 ```
 
 ## Critical Rules

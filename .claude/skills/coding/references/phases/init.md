@@ -122,23 +122,30 @@ Use spec's `feature_id` as the feature name (already validated and formatted).
 
 ### If No Spec
 
-From task description, extract 3-5 key words:
+Use naming skill to generate feature name:
 
-- **Focus on**: action verbs, main features, technologies
-- **Ignore**: filler words (the, a, with, and, for, to, in, of, etc.)
-- **Format**: lowercase, kebab-case
-- **Max length**: 30 characters
+```
+Skill(skill: "naming", args: "{task_description}")
+```
+
+The naming skill will:
+
+- Extract 2-3 key concepts from the task description
+- Focus on action verbs, main features, technologies
+- Ignore filler words (the, a, with, and, for, to, in, of, etc.)
+- Format: lowercase, kebab-case
+- Max length: 30 characters
 
 ### Examples
 
 | Task Description                            | Generated Name                |
 | ------------------------------------------- | ----------------------------- |
-| "Add JWT authentication with refresh token" | `add-jwt-auth-refresh-token`  |
-| "Fix bug in user login flow"                | `fix-user-login-bug`          |
-| "Implement dark mode toggle in settings"    | `impl-dark-mode-toggle`       |
-| "Refactor database connection pooling"      | `refactor-db-connection-pool` |
-| "Update API endpoint for user profile"      | `update-api-user-profile`     |
-| "Create pagination component"               | `create-pagination-component` |
+| "Add JWT authentication with refresh token" | `jwt-auth-refresh-token`      |
+| "Fix bug in user login flow"                | `user-login-fix`              |
+| "Implement dark mode toggle in settings"    | `dark-mode-toggle`            |
+| "Refactor database connection pooling"      | `db-connection-refactor`      |
+| "Update API endpoint for user profile"      | `api-user-profile`            |
+| "Create pagination component"               | `pagination-component`        |
 
 ## 2. Ask User Confirmation
 
