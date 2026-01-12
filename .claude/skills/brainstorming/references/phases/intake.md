@@ -39,6 +39,7 @@ Create file at `.claude/.specs/{name}.md` using [spec-template.md](../spec-templ
 ---
 status: draft
 feature_id: { name }
+current_phase: intake
 created: { ISO timestamp }
 updated: { ISO timestamp }
 ---
@@ -70,5 +71,6 @@ Let's clarify the requirements. I'll ask some questions to make sure we have eve
 
 ### 7. Mark Phase Complete
 
+- Update spec frontmatter: `current_phase: clarify`
 - Update todo: mark Intake as `completed`
 - Proceed to Clarify phase

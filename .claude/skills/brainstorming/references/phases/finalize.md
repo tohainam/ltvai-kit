@@ -48,7 +48,9 @@ Options:
     description: "Let's discuss and agree on the implementation approach"
 ```
 
-If missing scouting -> Return to Scout phase
+If missing scouting:
+  - Update spec frontmatter: `current_phase: scout`
+  - Return to Scout phase
 If missing approach -> Discuss and update spec
 
 **If validation PASSES**:
@@ -104,10 +106,13 @@ On user confirmation:
    ---
    status: approved
    feature_id: { feature_id }
+   current_phase: finalize
    created: { original timestamp }
    updated: { current ISO timestamp }
    ---
    ```
+
+   Note: `current_phase` kept for audit trail; not used when `status: approved`.
 
 2. Log finalization to Discussion section:
 

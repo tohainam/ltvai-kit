@@ -142,6 +142,10 @@ Options:
 ### 9. Mark Phase Complete
 
 - Update todo: mark Clarify as `completed`
-- If "Yes, scout": Proceed to Scout phase
-- If "Skip scouting": Proceed to Finalize phase
+- If "Yes, scout":
+  - Update spec frontmatter: `current_phase: scout`
+  - Proceed to Scout phase
+- If "Skip scouting":
+  - Update spec frontmatter: `current_phase: finalize`
+  - Proceed to Finalize phase
 - If "More questions": Continue clarification loop

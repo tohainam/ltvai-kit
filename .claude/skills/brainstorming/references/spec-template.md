@@ -8,6 +8,7 @@ Use this template when creating new spec files.
 ---
 status: draft
 feature_id: {feature-id}
+current_phase: intake
 created: {ISO 8601 timestamp}
 updated: {ISO 8601 timestamp}
 ---
@@ -33,6 +34,10 @@ updated: {ISO 8601 timestamp}
 - {Link type}: {URL or description}
 
 ## Technical Analysis (from scouting)
+
+### Dispatch Decision
+
+{To be filled during scouting phase - records delegating skill decision}
 
 ### Related Files
 
@@ -61,12 +66,13 @@ updated: {ISO 8601 timestamp}
 
 ### Frontmatter Fields
 
-| Field      | Description                        | Values                        |
-| ---------- | ---------------------------------- | ----------------------------- |
-| status     | Current spec status                | draft, approved, done         |
-| feature_id | Unique identifier (kebab-case)     | e.g., social-login            |
-| created    | Creation timestamp                 | ISO 8601 format               |
-| updated    | Last update timestamp              | ISO 8601 format               |
+| Field         | Description                    | Values                                  |
+| ------------- | ------------------------------ | --------------------------------------- |
+| status        | Current spec status            | draft, approved, done                   |
+| feature_id    | Unique identifier (kebab-case) | e.g., social-login                      |
+| current_phase | Current workflow phase         | intake, clarify, scout, finalize        |
+| created       | Creation timestamp             | ISO 8601 format                         |
+| updated       | Last update timestamp          | ISO 8601 format                         |
 
 ### Status Flow
 

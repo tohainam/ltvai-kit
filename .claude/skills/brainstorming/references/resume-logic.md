@@ -122,7 +122,16 @@ When `/code` detects a draft spec that matches the task:
 ## Phase Detection Logic
 
 ```
-function detect_current_phase(spec_content):
+function detect_current_phase(spec):
+
+  # Priority 1: Read from frontmatter (explicit tracking)
+  if spec.frontmatter.current_phase:
+    return spec.frontmatter.current_phase
+
+  # Priority 2: Fallback to content detection (for legacy specs)
+  return detect_from_content(spec.content)
+
+function detect_from_content(spec_content):
 
   overview = extract_section("## Overview", spec_content)
   requirements = extract_section("## Requirements", spec_content)

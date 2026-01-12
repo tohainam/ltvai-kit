@@ -35,9 +35,27 @@ Skill(
 )
 ```
 
-### 3. Execute Scouting
+### 3. Parse and Record Decision
 
-Parse DISPATCH DECISION from delegating skill.
+Parse DISPATCH DECISION from delegating skill response.
+
+**Write decision to spec file** (Technical Analysis > Dispatch Decision):
+
+```markdown
+### Dispatch Decision
+
+Agent: scouter
+Mode: [single | parallel]
+Instances: [number]
+Strategy: [strategy name]
+
+Inputs:
+[1] Focus: [focus] | Scope: [scope]
+[2] Focus: [focus] | Scope: [scope]
+...
+```
+
+### 4. Execute Scouting
 
 Launch scouter agent(s) based on decision:
 
@@ -49,7 +67,9 @@ Task(
 )
 ```
 
-### 4. Collect Findings
+If parallel mode with multiple instances, launch all in parallel.
+
+### 5. Collect Findings
 
 Wait for scouter to complete. Extract:
 
@@ -58,7 +78,7 @@ Wait for scouter to complete. Extract:
 - Integration points
 - Dependencies
 
-### 5. Update Spec File
+### 6. Update Spec File
 
 Add findings to Technical Analysis section:
 
@@ -81,7 +101,7 @@ Add findings to Technical Analysis section:
 - Existing hooks or extension points
 ```
 
-### 6. Log to Discussion
+### 7. Log to Discussion
 
 Add scouting summary:
 
@@ -94,7 +114,7 @@ Add scouting summary:
 - Integration: suggested integration point
 ```
 
-### 7. Present Findings
+### 8. Present Findings
 
 ```
 Scouting complete. Found {N} related files and {M} patterns.
@@ -107,7 +127,8 @@ Key findings:
 Ready to finalize the spec?
 ```
 
-### 8. Mark Phase Complete
+### 9. Mark Phase Complete
 
+- Update spec frontmatter: `current_phase: finalize`
 - Update todo: mark Scout as `completed`
 - Proceed to Finalize phase
