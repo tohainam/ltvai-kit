@@ -1,0 +1,8 @@
+{
+    "alwaysThinkingEnabled": true,
+    "language": "vietnamese",
+    "statusLine": {
+        "type": "command",
+        "command": "bash \"${CLAUDE_PROJECT_ROOT:-.}/.claude/statusline.sh\" 2>/dev/null || bash .claude/statusline.sh"
+    }
+}

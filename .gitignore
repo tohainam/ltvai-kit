@@ -1,0 +1,9 @@
+# Claude Code session reports
+.claude/.docs
+
+# Claude Code spec files (local only)
+.claude/.specs
+
+assets
+__pycache__
+
