@@ -53,13 +53,7 @@ Plan mode requires user to review and approve the plan via `ExitPlanMode`.
 
 ### 4. Write Report
 
-After approval, create `{SESSION_PATH}/plan-report.md` using **full template** from [report-templates.md](../report-templates.md):
-
-- Overview
-- Architecture Decisions
-- Files to Modify
-- Implementation Steps
-- Potential Risks
+After approval, create `{SESSION_PATH}/plan-report.md` using **full template** from [report-templates.md](../report-templates.md).
 
 ### 5. Update State
 

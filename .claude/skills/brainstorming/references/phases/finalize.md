@@ -137,6 +137,8 @@ The coding workflow will auto-detect this spec.
 ## If "Edit more" Selected
 
 - Ask what the user wants to change
-- Update spec accordingly
+- **IMMEDIATELY update spec** with user's changes (before asking anything else)
 - Re-run validation
 - Return to confirmation step
+
+**CRITICAL**: Every user confirmation or edit MUST be written to spec file RIGHT AWAY. Do not wait or batch updates.

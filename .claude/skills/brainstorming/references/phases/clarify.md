@@ -16,15 +16,21 @@ Interactive Q&A loop to gather complete requirements.
 
 ### 3. Interactive Loop
 
+**CRITICAL: Update spec IMMEDIATELY after EVERY user response**
+
 ```
 while (requirements unclear) {
   - Ask targeted questions (max 3 at a time)
   - Wait for user response
-  - Log Q&A to Discussion section
-  - Update spec sections with new info
+  - IMMEDIATELY update spec file:
+    1. Log Q&A to Discussion section
+    2. Update relevant spec sections (Overview, Requirements, etc.)
+    3. Save file before asking next question
   - Check if requirements are complete
 }
 ```
+
+**DO NOT** batch updates or wait until the end of clarification. Each user answer must be written to spec file RIGHT AWAY.
 
 Use `AskUserQuestion` tool for structured questions:
 
@@ -69,7 +75,7 @@ Ask about (prioritize based on gaps):
 
 ### 5. Logging Format
 
-After each Q&A round, update the spec file:
+**IMMEDIATELY after each user response**, update the spec file:
 
 ```markdown
 ### Clarification Round {N}
@@ -83,7 +89,7 @@ After each Q&A round, update the spec file:
 
 ### 6. Update Spec Sections
 
-After each round, update relevant sections:
+**IMMEDIATELY after logging**, update relevant sections:
 
 - **Overview**: Refine if clearer understanding
 - **Functional Requirements**: Add specific items

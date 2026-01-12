@@ -48,12 +48,7 @@ Add implementation sub-tasks to todo list based on quick plan.
 
 ### 4. Write Report
 
-Create `{SESSION_PATH}/plan-report.md` using **lite template** from [report-templates.md](../report-templates.md):
-
-- Overview
-- Files to Modify
-- Implementation Steps
-- (No Architecture Decisions or Potential Risks)
+Create `{SESSION_PATH}/plan-report.md` using **lite template** from [report-templates.md](../report-templates.md).
 
 ### 5. Update State
 
