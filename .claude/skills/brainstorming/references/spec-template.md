@@ -9,6 +9,7 @@ Use this template when creating new spec files.
 status: draft
 feature_id: {feature-id}
 current_phase: intake
+clarify_rounds: 0
 created: {ISO 8601 timestamp}
 updated: {ISO 8601 timestamp}
 ---
@@ -66,13 +67,14 @@ updated: {ISO 8601 timestamp}
 
 ### Frontmatter Fields
 
-| Field         | Description                    | Values                                  |
-| ------------- | ------------------------------ | --------------------------------------- |
-| status        | Current spec status            | draft, approved, done                   |
-| feature_id    | Unique identifier (kebab-case) | e.g., social-login                      |
-| current_phase | Current workflow phase         | intake, clarify, scout, finalize        |
-| created       | Creation timestamp             | ISO 8601 format                         |
-| updated       | Last update timestamp          | ISO 8601 format                         |
+| Field          | Description                         | Values                           |
+| -------------- | ----------------------------------- | -------------------------------- |
+| status         | Current spec status                 | draft, approved, done            |
+| feature_id     | Unique identifier (kebab-case)      | e.g., social-login               |
+| current_phase  | Current workflow phase              | intake, clarify, scout, finalize |
+| clarify_rounds | Number of clarification rounds done | 0, 1, 2, 3, ... (minimum 3)      |
+| created        | Creation timestamp                  | ISO 8601 format                  |
+| updated        | Last update timestamp               | ISO 8601 format                  |
 
 ### Status Flow
 

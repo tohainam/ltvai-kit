@@ -4,6 +4,9 @@
 # Claude Code spec files (local only)
 .claude/.specs
 
+# Claude Code review reports
+.claude/.reviews
+
 assets
 __pycache__
 

@@ -136,6 +136,12 @@ The naming skill will:
 - Format: lowercase, kebab-case
 - Max length: 30 characters
 
+**IMPORTANT**: After receiving the generated name from naming skill, display it to the user:
+
+```
+Generated feature name: {generated_name}
+```
+
 ### Examples
 
 | Task Description                            | Generated Name                |

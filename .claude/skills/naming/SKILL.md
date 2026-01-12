@@ -1,7 +1,8 @@
 ---
 name: naming
 description: Generate consistent names for files, folders, and identifiers. Used by brainstorming (spec naming) and coding (session naming) skills. Internal utility - not user-invocable.
-allowed-tools: none
+allowed-tools: Read, Glob, Grep
+context: fork
 user-invocable: false
 ---
 
@@ -41,15 +42,15 @@ Generate consistent, meaningful names for files, folders, and identifiers.
 
 ## Examples
 
-| Input                                       | Output                |
-| ------------------------------------------- | --------------------- |
-| "Add social login with Google and Facebook" | social-login          |
-| "Refactor payment processing module"        | payment-refactor      |
-| "Fix bug in user registration flow"         | user-registration-fix |
-| "Implement dark mode toggle"                | dark-mode-toggle      |
+| Input                                       | Output                 |
+| ------------------------------------------- | ---------------------- |
+| "Add social login with Google and Facebook" | social-login           |
+| "Refactor payment processing module"        | payment-refactor       |
+| "Fix bug in user registration flow"         | user-registration-fix  |
+| "Implement dark mode toggle"                | dark-mode-toggle       |
 | "Add JWT authentication with refresh token" | jwt-auth-refresh-token |
-| "Update API endpoint for user profile"      | api-user-profile      |
-| "Create pagination component"               | pagination-component  |
+| "Update API endpoint for user profile"      | api-user-profile       |
+| "Create pagination component"               | pagination-component   |
 
 ## Uniqueness Check
 

@@ -28,8 +28,14 @@ The naming skill will:
 - Format: kebab-case, lowercase
 - Max 30 characters
 
-After receiving the generated name, check uniqueness in `.claude/.specs/`.
-If name already exists, append numeric suffix (`-2`, `-3`, etc.)
+**IMPORTANT**: After receiving the generated name from naming skill, display it to the user:
+
+```
+Generated spec name: {generated_name}
+```
+
+Then check uniqueness in `.claude/.specs/`.
+If name already exists, append numeric suffix (`-2`, `-3`, etc.) and inform user of the final name used.
 
 ### 4. Create Draft Spec
 
