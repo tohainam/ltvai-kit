@@ -143,18 +143,18 @@ current_time=$(date +%H:%M:%S 2>/dev/null || date +%T)
 ctx_info=""
 
 if command_exists jq; then
-    # Get values directly from Claude Code
-    current=$(echo "$input" | jq '.context_window.used // 0' 2>/dev/null)
-    total=$(echo "$input" | jq '.context_window.total // 0' 2>/dev/null)
+    # Get percentage directly from Claude Code (correct field name)
+    pct=$(echo "$input" | jq '.context_window.used_percentage // 0' 2>/dev/null)
 
-    # Ensure valid numbers
-    current=${current:-0}
-    total=${total:-0}
+    # Convert to integer (remove decimal)
+    pct=${pct%.*}
+    pct=${pct:-0}
 
-    if [[ "$total" -gt 0 ]]; then
-        # Simple percentage calculation
-        pct=$((current * 100 / total))
-        [[ "$pct" -gt 100 ]] && pct=100
+    # Ensure valid range
+    [[ "$pct" -gt 100 ]] && pct=100
+    [[ "$pct" -lt 0 ]] && pct=0
+
+    if [[ "$pct" -ge 0 ]]; then
 
         # Color based on percentage
         if [[ "$pct" -gt 85 ]]; then
@@ -169,10 +169,6 @@ if command_exists jq; then
         bar_result=$(generate_bar "$pct" "$BAR_WIDTH")
         bar_filled="${bar_result%%|*}"
         bar_empty="${bar_result##*|}"
-
-        # Convert to K format
-        cur_k=$((current / 1000))
-        total_k=$((total / 1000))
 
         ctx_info=$(printf " \033[%sm%s${COLOR_GRAY}%s${COLOR_RESET} \033[%sm%d%%${COLOR_RESET}" \
             "$color_code" "$bar_filled" "$bar_empty" "$color_code" "$pct")
