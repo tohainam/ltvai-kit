@@ -14,7 +14,6 @@ set -o pipefail
 BAR_WIDTH=10
 CHAR_FILLED="█"
 CHAR_EMPTY="░"
-AUTOCOMPACT_BUFFER=45000  # Reserved buffer for autocompact (45K tokens)
 
 # Colors (ANSI)
 COLOR_RESET="\033[0m"
@@ -106,7 +105,7 @@ input=$(cat)
 current_path=$(get_short_path "$(pwd)")
 
 # -----------------------------------------------------------------------------
-# Git Information
+# Git Information (branch only)
 # -----------------------------------------------------------------------------
 git_info=""
 if command_exists git && git rev-parse --git-dir >/dev/null 2>&1; then
@@ -118,29 +117,7 @@ if command_exists git && git rev-parse --git-dir >/dev/null 2>&1; then
              git $GIT_OPTS rev-parse --short HEAD 2>/dev/null)
 
     if [[ -n "$branch" ]]; then
-        # Check for uncommitted changes
-        if ! git $GIT_OPTS diff --quiet 2>/dev/null || \
-           ! git $GIT_OPTS diff --cached --quiet 2>/dev/null; then
-            status="*"
-            branch_color="$COLOR_RED"
-        else
-            status=""
-            branch_color="$COLOR_GREEN"
-        fi
-
-        # Check sync status with remote
-        ahead=$(git $GIT_OPTS rev-list --count @{u}..HEAD 2>/dev/null || echo "0")
-        behind=$(git $GIT_OPTS rev-list --count HEAD..@{u} 2>/dev/null || echo "0")
-
-        sync_info=""
-        if [[ "$ahead" != "0" ]] || [[ "$behind" != "0" ]]; then
-            [[ "$ahead" != "0" ]] && sync_info="↑${ahead}"
-            [[ "$behind" != "0" ]] && sync_info="${sync_info}↓${behind}"
-            sync_info=" ${sync_info}"
-        fi
-
-        git_info=$(printf " ${COLOR_GRAY}on${COLOR_RESET} \033[%sm%s%s${COLOR_RESET}${COLOR_CYAN}%s${COLOR_RESET}" \
-            "$branch_color" "$branch" "$status" "$sync_info")
+        git_info=$(printf " ${COLOR_GRAY}on${COLOR_RESET} \033[${COLOR_GREEN}m%s${COLOR_RESET}" "$branch")
     fi
 fi
 
@@ -166,54 +143,46 @@ current_time=$(date +%H:%M:%S 2>/dev/null || date +%T)
 ctx_info=""
 
 if command_exists jq; then
-    usage=$(echo "$input" | jq '.context_window.current_usage // null')
+    # Get values directly from Claude Code
+    current=$(echo "$input" | jq '.context_window.used // 0' 2>/dev/null)
+    total=$(echo "$input" | jq '.context_window.total // 0' 2>/dev/null)
 
-    if [[ "$usage" != "null" && -n "$usage" ]]; then
-        # Calculate token usage
-        current=$(echo "$input" | jq '.context_window.current_usage | (.input_tokens // 0) + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)' 2>/dev/null)
-        total_size=$(echo "$input" | jq '.context_window.context_window_size // 1' 2>/dev/null)
+    # Ensure valid numbers
+    current=${current:-0}
+    total=${total:-0}
 
-        # Ensure we have valid numbers
-        current=${current:-0}
-        total_size=${total_size:-1}
+    if [[ "$total" -gt 0 ]]; then
+        # Simple percentage calculation
+        pct=$((current * 100 / total))
+        [[ "$pct" -gt 100 ]] && pct=100
 
-        # Calculate usable size (total - autocompact buffer)
-        usable_size=$((total_size - AUTOCOMPACT_BUFFER))
-        [[ "$usable_size" -lt 1 ]] && usable_size=1
-
-        if [[ "$usable_size" -gt 0 ]]; then
-            # Calculate percentage based on usable space
-            pct=$((current * 100 / usable_size))
-            [[ "$pct" -gt 100 ]] && pct=100
-
-            # Color based on percentage
-            if [[ "$pct" -gt 85 ]]; then
-                color_code="$COLOR_RED"
-            elif [[ "$pct" -gt 70 ]]; then
-                color_code="$COLOR_YELLOW"
-            else
-                color_code="$COLOR_GREEN"
-            fi
-
-            # Generate progress bar
-            bar_result=$(generate_bar "$pct" "$BAR_WIDTH")
-            bar_filled="${bar_result%%|*}"
-            bar_empty="${bar_result##*|}"
-
-            # Convert to K format (show current/usable)
-            cur_k=$((current / 1000))
-            usable_k=$((usable_size / 1000))
-
-            ctx_info=$(printf " [\033[%sm%s${COLOR_GRAY}%s${COLOR_RESET}] \033[%sm%d%%${COLOR_RESET} ${COLOR_GRAY}(%dK/%dK)${COLOR_RESET}" \
-                "$color_code" "$bar_filled" "$bar_empty" "$color_code" "$pct" "$cur_k" "$usable_k")
+        # Color based on percentage
+        if [[ "$pct" -gt 85 ]]; then
+            color_code="$COLOR_RED"
+        elif [[ "$pct" -gt 70 ]]; then
+            color_code="$COLOR_YELLOW"
+        else
+            color_code="$COLOR_GREEN"
         fi
+
+        # Generate progress bar
+        bar_result=$(generate_bar "$pct" "$BAR_WIDTH")
+        bar_filled="${bar_result%%|*}"
+        bar_empty="${bar_result##*|}"
+
+        # Convert to K format
+        cur_k=$((current / 1000))
+        total_k=$((total / 1000))
+
+        ctx_info=$(printf " [\033[%sm%s${COLOR_GRAY}%s${COLOR_RESET}] \033[%sm%d%%${COLOR_RESET} ${COLOR_GRAY}(%dK/%dK)${COLOR_RESET}" \
+            "$color_code" "$bar_filled" "$bar_empty" "$color_code" "$pct" "$cur_k" "$total_k")
     fi
 fi
 
-# Default context info if not set (assume 200K context - 45K buffer = 155K usable)
+# Default context info if not available
 if [[ -z "$ctx_info" ]]; then
     empty_bar=$(printf '%*s' "$BAR_WIDTH" '' | tr ' ' "$CHAR_EMPTY")
-    ctx_info=$(printf " [${COLOR_GRAY}%s${COLOR_RESET}] \033[%sm0%%${COLOR_RESET} ${COLOR_GRAY}(0K/155K)${COLOR_RESET}" \
+    ctx_info=$(printf " [${COLOR_GRAY}%s${COLOR_RESET}] \033[%sm0%%${COLOR_RESET} ${COLOR_GRAY}(0K/0K)${COLOR_RESET}" \
         "$empty_bar" "$COLOR_GREEN")
 fi
 
