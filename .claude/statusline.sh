@@ -12,8 +12,8 @@ set -o pipefail
 # Configuration
 # -----------------------------------------------------------------------------
 BAR_WIDTH=10
-CHAR_FILLED="█"
-CHAR_EMPTY="░"
+CHAR_FILLED="▰"
+CHAR_EMPTY="▱"
 
 # Colors (ANSI)
 COLOR_RESET="\033[0m"
@@ -22,9 +22,9 @@ COLOR_BLUE="\033[94m"
 COLOR_DARK_BLUE="\033[34m"
 COLOR_CYAN="\033[36m"
 COLOR_MAGENTA="\033[95m"
-COLOR_GREEN="32"
-COLOR_YELLOW="33"
-COLOR_RED="31"
+COLOR_GREEN="92"
+COLOR_YELLOW="93"
+COLOR_RED="91"
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -73,7 +73,7 @@ get_short_path() {
     fi
 }
 
-# Generate progress bar
+# Generate progress bar with spacing
 generate_bar() {
     local percent="$1"
     local width="$2"
@@ -84,11 +84,11 @@ generate_bar() {
     local bar_empty=""
 
     for ((i=0; i<filled; i++)); do
-        bar_filled+="$CHAR_FILLED"
+        bar_filled+="${CHAR_FILLED}"
     done
 
     for ((i=0; i<empty; i++)); do
-        bar_empty+="$CHAR_EMPTY"
+        bar_empty+="${CHAR_EMPTY}"
     done
 
     echo "${bar_filled}|${bar_empty}"
@@ -174,15 +174,15 @@ if command_exists jq; then
         cur_k=$((current / 1000))
         total_k=$((total / 1000))
 
-        ctx_info=$(printf " [\033[%sm%s${COLOR_GRAY}%s${COLOR_RESET}] \033[%sm%d%%${COLOR_RESET} ${COLOR_GRAY}(%dK/%dK)${COLOR_RESET}" \
-            "$color_code" "$bar_filled" "$bar_empty" "$color_code" "$pct" "$cur_k" "$total_k")
+        ctx_info=$(printf " \033[%sm%s${COLOR_GRAY}%s${COLOR_RESET} \033[%sm%d%%${COLOR_RESET}" \
+            "$color_code" "$bar_filled" "$bar_empty" "$color_code" "$pct")
     fi
 fi
 
 # Default context info if not available
 if [[ -z "$ctx_info" ]]; then
     empty_bar=$(printf '%*s' "$BAR_WIDTH" '' | tr ' ' "$CHAR_EMPTY")
-    ctx_info=$(printf " [${COLOR_GRAY}%s${COLOR_RESET}] \033[%sm0%%${COLOR_RESET} ${COLOR_GRAY}(0K/0K)${COLOR_RESET}" \
+    ctx_info=$(printf " ${COLOR_GRAY}%s${COLOR_RESET} \033[%sm0%%${COLOR_RESET}" \
         "$empty_bar" "$COLOR_GREEN")
 fi
 
