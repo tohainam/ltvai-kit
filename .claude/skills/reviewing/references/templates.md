@@ -213,6 +213,9 @@ tags:
 
 ### Action Plan
 
+**CRITICAL: ALL checkboxes MUST remain UNCHECKED `[ ]`. NEVER mark items as done `[x]`.**
+**This is a specification document - implementation has NOT been done yet.**
+
 #### Must Fix Now (Critical)
 
 1. [ ] {Action item with finding ID}

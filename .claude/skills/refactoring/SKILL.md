@@ -26,6 +26,7 @@ description: |
 8. **NEVER** implement automatically - always show output summary at the end
 9. **ALWAYS** generate characterization tests (must be GREEN before AND after refactoring)
 10. **MUST** assess complexity to determine Simple/Complex branching
+11. **NEVER** mark checklist items as done - ALL checkboxes MUST remain unchecked `[ ]`
 
 ---
 

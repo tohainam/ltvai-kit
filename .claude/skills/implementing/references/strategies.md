@@ -113,6 +113,23 @@ router.post('/api/v1/resource', async (req, res) => {
 ]
 ```
 
+### Checklist Tracking (in spec file)
+
+After completing each task, mark it done in spec's Implementation Tasks section:
+
+```markdown
+## Implementation Tasks
+
+### Setup
+- [x] Task 1: Create project structure (Est: 1h) ✅ 180126-1430
+- [x] Task 2: Configure dependencies (Est: 30m) ✅ 180126-1445
+
+### Core Features
+- [x] Task 3: Implement data models (Est: 2h) ✅ 180126-1500
+- [ ] Task 4: Create API endpoints (Est: 3h)  ← IN PROGRESS
+- [ ] Task 5: Add business logic (Est: 4h)
+```
+
 ---
 
 ## Reviewing Strategy
@@ -178,6 +195,26 @@ FOR each critical_issue:
   { "content": "Fix QUAL-001: Unhandled null reference", "status": "pending", "activeForm": "Fixing null reference issue" },
   { "content": "Document skipped medium/low issues", "status": "pending", "activeForm": "Documenting deferred issues" }
 ]
+```
+
+### Checklist Tracking (in spec file)
+
+Mark issues as fixed in spec's Action Plan section:
+
+```markdown
+## Action Plan
+
+### Critical (MUST FIX NOW)
+- [x] SEC-001: Fix SQL injection in user query ✅ 180126-1430
+- [x] QUAL-001: Fix unhandled null reference ✅ 180126-1445
+
+### High Priority (Fix if time permits)
+- [ ] PERF-001: Add caching for repeated queries
+- [ ] QUAL-002: Refactor duplicate validation
+
+### Deferred to next iteration
+- [ ] STYLE-001: Inconsistent naming
+- [ ] DOC-001: Missing JSDoc
 ```
 
 ### Output Notes
@@ -286,6 +323,26 @@ FOR each migration_step:
 ]
 ```
 
+### Checklist Tracking (in spec file)
+
+Mark migration steps as done in spec's Migration Plan section:
+
+```markdown
+## Migration Plan
+
+### Characterization Test
+- [x] Create test file ✅ 180126-1430
+- [x] Verify GREEN ✅ 180126-1431
+
+### Migration Steps
+- [x] Step 1: Extract method validateInput ✅ 180126-1440
+  - [x] Verify GREEN after step ✅ 180126-1441
+- [x] Step 2: Introduce parameter object ✅ 180126-1450
+  - [x] Verify GREEN after step ✅ 180126-1451
+- [ ] Step 3: Move to separate file  ← IN PROGRESS
+  - [ ] Verify GREEN after step
+```
+
 ### Safety Rules
 
 1. **Never skip characterization test** - It's your safety net
@@ -380,6 +437,26 @@ FOR each affected_file in FIX-001:
 ]
 ```
 
+### Checklist Tracking (in spec file)
+
+Mark fix steps as done in spec's Fix Strategy section:
+
+```markdown
+## FIX-001: Fix null reference in auth validation
+
+**Approach**: patch
+
+**Steps**:
+- [x] Read affected file src/services/auth.ts ✅ 180126-1430
+- [x] Locate line 45 with problematic code ✅ 180126-1431
+- [x] Apply null check: `user?.email?.toLowerCase()` ✅ 180126-1432
+- [x] Verify syntax correct ✅ 180126-1433
+
+**Affected Files**:
+- [x] `src/services/auth.ts`: Add null check ✅ 180126-1432
+- [ ] `src/utils/validation.ts`: Add validation  ← IN PROGRESS
+```
+
 ### Code Change Format in Spec
 
 The debugging spec typically contains:
@@ -408,6 +485,86 @@ The implementing skill should locate line 45 in auth.ts and apply this exact cha
 ---
 
 ## Common Patterns Across Strategies
+
+### Spec Progress Tracking (MANDATORY when spec exists)
+
+**When to update spec**:
+1. At start of implementation → status: `implementing`
+2. After each task completion → mark checkbox in spec's existing checklist
+3. At end of implementation → status: `implemented`
+
+**Spec Checklist Locations by Type**:
+
+| spec_type | Checklist Location | Format |
+|-----------|-------------------|--------|
+| brainstorming | Phase 5 → Implementation Tasks | `- [ ] Task description` |
+| debugging | Phase 4 → Fix Strategy → Steps | `- [ ] Step description` |
+| reviewing | Phase 4 → Action Plan | `- [ ] Action item` |
+| refactoring | Phase 5 → Migration Plan | `- [ ] Migration step` |
+
+**Update Pattern - USE EXISTING CHECKLISTS**:
+
+```
+FOR each task in spec_checklist:
+    1. Update frontmatter:
+       current_step: {task_number}
+       current_step_description: "{task_description}"
+
+    2. Execute the task
+
+    3. Mark checkbox DONE in spec file:
+       BEFORE: - [ ] Task description
+       AFTER:  - [x] Task description ✅ {timestamp}
+
+    4. Update TodoWrite to match
+```
+
+**Example - Brainstorming Spec Checklist**:
+
+```markdown
+## Implementation Tasks
+
+### Setup
+- [x] Task 1: Create project structure ✅ 180126-1430
+- [x] Task 2: Configure dependencies ✅ 180126-1445
+
+### Core Features
+- [x] Task 3: Implement data models ✅ 180126-1500
+- [ ] Task 4: Create API endpoints  ← CURRENT
+- [ ] Task 5: Add business logic
+
+### Testing
+- [ ] Task 6: Write unit tests
+```
+
+**Example - Debugging Spec Checklist**:
+
+```markdown
+### FIX-001: Fix null reference
+
+**Steps**:
+- [x] Read affected file src/auth.ts ✅ 180126-1430
+- [x] Locate problematic code at line 45 ✅ 180126-1431
+- [ ] Apply null check fix  ← CURRENT
+- [ ] Verify syntax correct
+```
+
+**Resume Logic**:
+```
+IF spec.status == "implementing":
+    # Parse spec checklist
+    FOR item in spec_checklist:
+        IF item starts with "- [x]":
+            mark as completed
+        ELIF item starts with "- [ ]":
+            resume_from = this item
+            BREAK
+
+    # Inform user
+    print("Resuming from: {resume_from.description}")
+
+    # Continue execution
+```
 
 ### File Operations
 
@@ -457,12 +614,138 @@ Always use TodoWrite to track progress:
 
 ---
 
-## Strategy Selection Quick Reference
+## Quick Reference
 
-| User Request | spec_type | Strategy |
-|--------------|-----------|----------|
-| "Implement auth feature" | brainstorming | Create new code from spec |
-| "Fix the issues from review" | reviewing | Fix critical issues only |
-| "Apply the refactoring plan" | refactoring | Behavior-preserving changes with tests |
-| "Fix the login crash bug" | debugging | Direct fix application |
+| User Request | Detected Mode | Strategy |
+|--------------|---------------|----------|
+| `/implementing .claude/.specs/brainstorming-*.md` | File Reference | Use spec directly |
+| `/implementing auth feature` | Natural Language | Find matching spec or continue without |
+| `/implementing implement login` | Natural Language | Find matching spec or continue without |
 
+| spec_type | Key Actions |
+|-----------|-------------|
+| brainstorming | Create new code from spec |
+| reviewing | Fix critical issues only |
+| refactoring | Behavior-preserving changes with tests |
+| debugging | Direct fix application |
+
+---
+
+## Phase 0: Mode Detection Details
+
+### Phase 0 Actions
+
+```
+1. Initialize TodoWrite with all 4 phases
+2. Detect mode (file_reference or natural_language)
+3. If natural_language:
+   a. Scan .claude/.specs/ for matching specs
+   b. If found → AskUserQuestion to confirm spec
+   c. If not found OR user declines → AskUserQuestion to confirm proceed without spec
+4. Mark Phase 0 complete, Phase 1 in_progress
+```
+
+### Confirmation Flow (MANDATORY for Natural Language mode)
+
+```
+┌─────────────────────────────────────┐
+│ User provides natural language      │
+│ query (not a spec file path)        │
+└──────────────────┬──────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────┐
+│ Scan .claude/.specs/ for matches    │
+└──────────────────┬──────────────────┘
+                   │
+         ┌─────────┴─────────┐
+         │                   │
+         ▼                   ▼
+┌─────────────────┐ ┌─────────────────┐
+│ Match found     │ │ No match found  │
+└────────┬────────┘ └────────┬────────┘
+         │                   │
+         ▼                   │
+┌─────────────────┐          │
+│ AskUserQuestion │          │
+│ "Is this the    │          │
+│ correct spec?"  │          │
+└────────┬────────┘          │
+         │                   │
+    ┌────┴────┐              │
+    │         │              │
+    ▼         ▼              │
+┌───────┐ ┌───────┐          │
+│  Yes  │ │  No   │          │
+└───┬───┘ └───┬───┘          │
+    │         │              │
+    │         └──────────────┼──────┐
+    │                        │      │
+    ▼                        ▼      ▼
+┌─────────────────┐ ┌─────────────────┐
+│ Use spec        │ │ AskUserQuestion │
+│ → Phase 1       │ │ "Proceed        │
+└─────────────────┘ │ without spec?"  │
+                    └────────┬────────┘
+                             │
+                        ┌────┴────┐
+                        │         │
+                        ▼         ▼
+                    ┌───────┐ ┌───────┐
+                    │  Yes  │ │  No   │
+                    └───┬───┘ └───┬───┘
+                        │         │
+                        ▼         ▼
+                    ┌───────┐ ┌───────┐
+                    │Phase 1│ │ ABORT │
+                    │no spec│ │suggest│
+                    └───────┘ │/brain │
+                              └───────┘
+```
+
+### Key Rules
+
+1. **ALWAYS initialize TodoWrite at start of Phase 0**
+2. **ALWAYS use AskUserQuestion before proceeding without spec**
+3. **NEVER auto-proceed without user confirmation in natural language mode**
+4. **If user aborts, suggest /brainstorming or /debugging**
+
+---
+
+## Progress Tracking Decision Tree
+
+```
+┌─────────────────────────────────────┐
+│ Has spec file?                      │
+└──────────────────┬──────────────────┘
+                   │
+         ┌─────────┴─────────┐
+         │                   │
+         ▼                   ▼
+    ┌─────────┐         ┌─────────┐
+    │   YES   │         │   NO    │
+    └────┬────┘         └────┬────┘
+         │                   │
+         ▼                   ▼
+┌─────────────────┐ ┌─────────────────┐
+│ Track progress  │ │ Use TodoWrite   │
+│ IN spec file:   │ │ ONLY (no spec   │
+│ - frontmatter   │ │ to update)      │
+│ - progress tbl  │ │                 │
+│ + TodoWrite     │ │ Can't resume    │
+└─────────────────┘ └─────────────────┘
+```
+
+### With Spec File
+- Update `status: implementing` at start
+- Track `current_step` in frontmatter
+- Maintain Implementation Progress table
+- Update `status: implemented` at end
+- **Resume capability**: YES
+
+### Without Spec File
+- Use TodoWrite for task tracking only
+- No persistent progress storage
+- **Resume capability**: NO (must restart if interrupted)
+
+**Recommendation**: For complex implementations, create a spec first using /brainstorming to enable resume capability.

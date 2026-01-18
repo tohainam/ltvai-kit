@@ -25,6 +25,7 @@ description: |
 6. **ALWAYS** update spec file after completing EACH phase
 7. **NEVER** skip research phase even if user provides links or asks for immediate action
 8. **NEVER** implement automatically - always show output summary at the end
+9. **NEVER** mark checklist items as done - ALL checkboxes MUST remain unchecked `[ ]`
 
 ---
 

@@ -267,6 +267,9 @@ tags:
 
 ## Phase 5: Migration Plan
 
+**CRITICAL: ALL checkboxes MUST remain UNCHECKED `[ ]`. NEVER mark items as done `[x]`.**
+**This is a specification document - implementation has NOT been done yet.**
+
 ### For Simple Refactoring (score < 4)
 
 #### Direct Refactoring Steps

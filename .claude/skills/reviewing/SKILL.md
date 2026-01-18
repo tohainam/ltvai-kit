@@ -26,6 +26,7 @@ description: |
 8. **NEVER** implement automatically - always show output summary at the end
 9. **ALWAYS** categorize findings by severity (critical/high/medium/low)
 10. **MUST** use maximum 5 scouter agents for parallel inspection
+11. **NEVER** mark action plan checklist items as done - ALL checkboxes MUST remain unchecked `[ ]`
 
 ---
 
@@ -337,8 +338,12 @@ NICE TO HAVE: All Low severity findings
 **STEP 1**: Generate final spec report sections
 
 - Summary section
-- Action plan with prioritized items
+- Action plan with prioritized items (ALL checkboxes UNCHECKED `[ ]`)
 - Recommendations
+
+**CRITICAL**: Action Plan checkboxes MUST ALL be unchecked `[ ]`.
+This is a SPECIFICATION document - NO implementation has been done.
+NEVER use `[x]` for any action item.
 
 **STEP 2**: Update spec file status to `complete`
 

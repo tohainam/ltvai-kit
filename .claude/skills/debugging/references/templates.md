@@ -330,7 +330,7 @@ tags:
 2. {action 2}
 3. {trigger action}
 
-**Assertions**:
+**Assertions** (CRITICAL: ALL checkboxes MUST remain UNCHECKED `[ ]` - this is a specification, NOT implementation):
 - [ ] {assertion 1}: expect({actual}).to{matcher}({expected})
 - [ ] {assertion 2}: expect({actual}).to{matcher}({expected})
 

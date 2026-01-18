@@ -26,6 +26,7 @@ description: |
 8. **NEVER** implement fixes automatically - always show output summary at the end
 9. **ALWAYS** classify severity (CRITICAL/HIGH/MEDIUM/LOW) for root cause findings
 10. **MUST** generate failing test case for TDD integration with Implementing skill
+11. **NEVER** mark checklist items as done - ALL checkboxes MUST remain unchecked `[ ]`
 
 ---
 

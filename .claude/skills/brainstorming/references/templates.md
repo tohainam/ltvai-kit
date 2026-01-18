@@ -120,6 +120,9 @@ tags: []
 
 ### Success Criteria
 
+**CRITICAL: ALL checkboxes MUST remain UNCHECKED `[ ]`. NEVER mark items as done `[x]`.**
+**This is a specification document - implementation has NOT been done yet.**
+
 - [ ] {Measurable criterion 1}
 - [ ] {Measurable criterion 2}
 - [ ] {Measurable criterion 3}
@@ -470,6 +473,9 @@ components:
 ```
 
 ### Implementation Tasks
+
+**CRITICAL: ALL checkboxes MUST remain UNCHECKED `[ ]`. NEVER mark items as done `[x]`.**
+**This is a specification document - implementation has NOT been done yet.**
 
 #### Setup (Est: {X}h)
 
