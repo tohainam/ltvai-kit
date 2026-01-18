@@ -28,7 +28,7 @@ Gate N→N+1
 
 ### Inputs from Phase 0
 
-- Spec file created at `.claude/.specs/refactoring-{slug}-{timestamp}.md`
+- Spec file created at `.specs/refactoring-{slug}-{timestamp}.md`
 - YAML frontmatter initialized
 - Mode selected (autonomous/collaborative)
 - User request captured

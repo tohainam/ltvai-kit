@@ -5,7 +5,7 @@ description: |
   Use when: (1) User requests PR/code review, (2) User needs security audit,
   (3) User wants code quality assessment, (4) User explicitly invokes /reviewing command.
 
-  Produces review reports in .claude/.specs/ with multi-dimension scoring,
+  Produces review reports in .specs/ with multi-dimension scoring,
   severity-categorized findings, and actionable recommendations. Supports Autonomous
   and Collaborative modes with numbered phases (0-5) and explicit gate criteria.
 ---
@@ -76,14 +76,14 @@ ELSE:
 
 **STEP 4**: Create spec file
 
-- Path: `.claude/.specs/reviewing-{slug}-{timestamp}.md`
+- Path: `.specs/reviewing-{slug}-{timestamp}.md`
 - Initialize with YAML frontmatter (see references/templates.md)
 - Set status: `initializing`
 
 **STEP 5**: Select mode using AskUserQuestion
 
 ```
-Spec file created at: .claude/.specs/reviewing-{slug}-{timestamp}.md
+Spec file created at: .specs/reviewing-{slug}-{timestamp}.md
 Review type detected: {review_type}
 
 Select your preferred review mode:
@@ -371,7 +371,7 @@ NEVER use `[x]` for any action item.
 REVIEW COMPLETE: {STATUS} (Score: {SCORE}/100)
 ========================================
 
-Spec File: .claude/.specs/reviewing-{slug}-{timestamp}.md
+Spec File: .specs/reviewing-{slug}-{timestamp}.md
 
 ---
 
@@ -402,7 +402,7 @@ FIX BEFORE MERGE (High): {count}
 Next Steps:
 
 Option A - Implement fixes with this spec:
-  /implementing .claude/.specs/reviewing-{slug}-{timestamp}.md
+  /implementing .specs/reviewing-{slug}-{timestamp}.md
 
 Option B - Export findings:
   Review the full spec file for detailed recommendations

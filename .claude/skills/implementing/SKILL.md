@@ -76,11 +76,11 @@ flowchart TB
         NatLang[Mode 2: Natural Language]
 
         Input --> ModeDetect
-        ModeDetect -->|"path contains .claude/.specs/"| FileRef
+        ModeDetect -->|"path contains .specs/"| FileRef
         ModeDetect -->|"keywords detected"| NatLang
 
         FileRef --> ReadSpec[Read Spec File]
-        NatLang --> ScanSpecs[Scan .claude/.specs/]
+        NatLang --> ScanSpecs[Scan .specs/]
         ScanSpecs --> MatchFiles{Multiple Matches?}
         MatchFiles -->|Yes| AskUser[AskUserQuestion]
         MatchFiles -->|No| ReadSpec
@@ -153,14 +153,14 @@ flowchart TB
 **STEP 1: Mode Detection**
 
 ```
-IF $ARGUMENTS contains ".claude/.specs/" OR ends with ".md":
+IF $ARGUMENTS contains ".specs/" OR ends with ".md":
     mode = "file_reference"
     spec_path = $ARGUMENTS
 
 ELIF $ARGUMENTS is not empty:
     mode = "natural_language"
     keywords = extract_keywords($ARGUMENTS)
-    matches = glob(".claude/.specs/*{keywords}*.md")
+    matches = glob(".specs/*{keywords}*.md")
 
     IF len(matches) == 0:
         ERROR: No matching spec files found
@@ -171,7 +171,7 @@ ELIF $ARGUMENTS is not empty:
 
 ELSE:
     ERROR: No input provided. Usage:
-    - /implementing .claude/.specs/brainstorming-*.md
+    - /implementing .specs/brainstorming-*.md
     - /implementing implement auth feature
 ```
 
@@ -547,11 +547,11 @@ Status Transition: complete → implementing → implemented ✓
 
 ### Mode 1: File Reference
 
-**Trigger**: Argument contains `.claude/.specs/` or ends with `.md`
+**Trigger**: Argument contains `.specs/` or ends with `.md`
 
 **Examples**:
 ```
-/implementing .claude/.specs/brainstorming-auth-feature-1801261458.md
+/implementing .specs/brainstorming-auth-feature-1801261458.md
 /implementing brainstorming-auth-*.md
 ```
 
@@ -574,7 +574,7 @@ Status Transition: complete → implementing → implemented ✓
 
 **Behavior**:
 1. Extract keywords from input
-2. Scan `.claude/.specs/` for matching files
+2. Scan `.specs/` for matching files
 3. Match against: slug, tags, filename
 4. Present matches for user confirmation
 
@@ -586,7 +586,7 @@ Status Transition: complete → implementing → implemented ✓
 ```
 Error: No matching spec files found for: {keywords}
 
-Available specs in .claude/.specs/:
+Available specs in .specs/:
 {list of available spec files}
 
 Please specify a valid spec file or keyword.
@@ -626,7 +626,7 @@ How would you like to proceed?
 
 ## Directory Structure
 
-- **`.claude/.specs/`**: Spec files from producer skills (brainstorming, debugging, etc.)
+- **`.specs/`**: Spec files from producer skills (brainstorming, debugging, etc.)
 
 ---
 
@@ -635,7 +635,7 @@ How would you like to proceed?
 ### Example 1: File Reference Mode
 
 ```
-User: /implementing .claude/.specs/brainstorming-auth-feature-1801261458.md
+User: /implementing .specs/brainstorming-auth-feature-1801261458.md
 
 ═══════════════════════════════════════
 📍 PHASE 0: Detection & Parse

@@ -41,7 +41,7 @@ Each gate follows this structure:
 
 | #   | Criterion              | Verification                                                        |
 | --- | ---------------------- | ------------------------------------------------------------------- |
-| 1   | Spec file created      | File exists at `.claude/.specs/brainstorming-{slug}-{timestamp}.md` |
+| 1   | Spec file created      | File exists at `.specs/brainstorming-{slug}-{timestamp}.md` |
 | 2   | Valid YAML frontmatter | Contains all required fields                                        |
 | 3   | Mode selected          | User responded with autonomous OR collaborative                     |
 

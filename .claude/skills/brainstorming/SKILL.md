@@ -6,7 +6,7 @@ description: |
   (3) User wants to explore implementation approaches, (4) User provides vague/short requests
   that need clarification, (5) User explicitly invokes /brainstorming command.
 
-  Produces specification files in .claude/.specs/ containing architecture diagrams (Mermaid),
+  Produces specification files in .specs/ containing architecture diagrams (Mermaid),
   data models, API contracts, and implementation task lists. Supports Autonomous and
   Collaborative modes with numbered phases (0-5) and explicit gate criteria.
 ---
@@ -64,14 +64,14 @@ date "+%d%m%y%H%M"
 
 **STEP 3**: Create spec file
 
-- Path: `.claude/.specs/brainstorming-{slug}-{timestamp}.md`
+- Path: `.specs/brainstorming-{slug}-{timestamp}.md`
 - Initialize with YAML frontmatter (see references/templates.md)
 - Set status: `initializing`
 
 **STEP 4**: Select mode using AskUserQuestion
 
 ```
-Spec file created at: .claude/.specs/brainstorming-{slug}-{timestamp}.md
+Spec file created at: .specs/brainstorming-{slug}-{timestamp}.md
 
 Select your preferred brainstorming mode:
 
@@ -533,7 +533,7 @@ endpoints:
 BRAINSTORMING COMPLETE
 ========================================
 
-Spec File: .claude/.specs/brainstorming-{slug}-{timestamp}.md
+Spec File: .specs/brainstorming-{slug}-{timestamp}.md
 
 ---
 
@@ -564,7 +564,7 @@ Implementation Scope:
 Next Steps:
 
 Option A - Implement with this spec:
-  /implementing .claude/.specs/brainstorming-{slug}-{timestamp}.md
+  /implementing .specs/brainstorming-{slug}-{timestamp}.md
 
 Option B - Continue refining:
   - Ask for specific section elaboration

@@ -5,7 +5,7 @@ description: |
   Use when: (1) User reports runtime errors or crashes, (2) User needs bug investigation,
   (3) User wants root cause analysis, (4) User explicitly invokes /debugging command.
 
-  Produces debugging specification files in .claude/.specs/ containing Root Cause Analysis (RCA),
+  Produces debugging specification files in .specs/ containing Root Cause Analysis (RCA),
   Reproduction Steps, and Fix Strategy. Supports Autonomous and Collaborative modes with numbered
   phases (0-5) and explicit gate criteria.
 ---
@@ -81,14 +81,14 @@ ELSE:
 
 **STEP 4**: Create spec file
 
-- Path: `.claude/.specs/debugging-{slug}-{timestamp}.md`
+- Path: `.specs/debugging-{slug}-{timestamp}.md`
 - Initialize with YAML frontmatter (see references/templates.md)
 - Set status: `initializing`
 
 **STEP 5**: Select mode using AskUserQuestion
 
 ```
-Spec file created at: .claude/.specs/debugging-{slug}-{timestamp}.md
+Spec file created at: .specs/debugging-{slug}-{timestamp}.md
 Issue type detected: {issue_type}
 
 Select your preferred debugging mode:
@@ -549,7 +549,7 @@ Apply 6Ms analysis adapted for software:
 DEBUGGING COMPLETE: {SEVERITY} Bug Analyzed
 ========================================
 
-Spec File: .claude/.specs/debugging-{slug}-{timestamp}.md
+Spec File: .specs/debugging-{slug}-{timestamp}.md
 
 ---
 
@@ -575,7 +575,7 @@ Recommended Fix:
 Next Steps:
 
 Option A - Implement fix:
-  /implementing .claude/.specs/debugging-{slug}-{timestamp}.md
+  /implementing .specs/debugging-{slug}-{timestamp}.md
 
 Option B - Review specification:
   Open the spec file for detailed analysis

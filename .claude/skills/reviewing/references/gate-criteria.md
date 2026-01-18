@@ -41,7 +41,7 @@ Each gate follows this structure:
 
 | # | Criterion | Verification |
 | - | --------- | ------------ |
-| 1 | Spec file created | File exists at `.claude/.specs/reviewing-{slug}-{timestamp}.md` |
+| 1 | Spec file created | File exists at `.specs/reviewing-{slug}-{timestamp}.md` |
 | 2 | Valid YAML frontmatter | Contains all required fields (spec_type, version, slug, etc.) |
 | 3 | Review type detected | pr_review, security_audit, or general_review |
 | 4 | Mode selected | User responded with autonomous OR collaborative |

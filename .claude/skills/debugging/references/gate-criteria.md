@@ -41,7 +41,7 @@ Each gate follows this structure:
 
 | # | Criterion | Verification |
 | - | --------- | ------------ |
-| 1 | Spec file created | File exists at `.claude/.specs/debugging-{slug}-{timestamp}.md` |
+| 1 | Spec file created | File exists at `.specs/debugging-{slug}-{timestamp}.md` |
 | 2 | Valid YAML frontmatter | Contains all required fields (spec_type, version, slug, etc.) |
 | 3 | Issue type detected | runtime_error, logic_bug, performance, security, or regression |
 | 4 | Mode selected | User responded with autonomous OR collaborative |

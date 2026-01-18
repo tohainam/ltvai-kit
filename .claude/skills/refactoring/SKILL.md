@@ -5,7 +5,7 @@ description: |
   Use when: (1) Code smells detected, (2) Technical debt reduction needed, (3) Design pattern application,
   (4) Performance optimization required, (5) User explicitly invokes /refactoring command.
 
-  Produces refactoring specification files in .claude/.specs/ containing Current Smells,
+  Produces refactoring specification files in .specs/ containing Current Smells,
   Target Patterns, and Step-by-step Migration Plan with Characterization Tests.
   Supports Autonomous and Collaborative modes with numbered phases (0-5) and explicit gate criteria.
 ---
@@ -82,14 +82,14 @@ ELSE:
 
 **STEP 4**: Create spec file
 
-- Path: `.claude/.specs/refactoring-{slug}-{timestamp}.md`
+- Path: `.specs/refactoring-{slug}-{timestamp}.md`
 - Initialize with YAML frontmatter (see references/templates.md)
 - Set status: `initializing`
 
 **STEP 5**: Select mode using AskUserQuestion
 
 ```
-Spec file created at: .claude/.specs/refactoring-{slug}-{timestamp}.md
+Spec file created at: .specs/refactoring-{slug}-{timestamp}.md
 Smell type detected: {smell_type}
 
 Select your preferred refactoring mode:
@@ -571,7 +571,7 @@ describe('{Component under test}', () => {
 REFACTORING COMPLETE: {Smell Type} Analysis
 ========================================
 
-Spec File: .claude/.specs/refactoring-{slug}-{timestamp}.md
+Spec File: .specs/refactoring-{slug}-{timestamp}.md
 
 ---
 
@@ -612,7 +612,7 @@ Migration Plan:
 Next Steps:
 
 Option A - Implement refactoring:
-  /implementing .claude/.specs/refactoring-{slug}-{timestamp}.md
+  /implementing .specs/refactoring-{slug}-{timestamp}.md
 
 Option B - Review specification:
   Open the spec file for detailed analysis
