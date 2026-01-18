@@ -6,8 +6,8 @@ description: |
   (3) User wants root cause analysis, (4) User explicitly invokes /debugging command.
 
   Produces debugging specification files in .claude/.specs/ containing Root Cause Analysis (RCA),
-  Reproduction Steps, Fix Strategy, and Failing Test Cases for TDD workflow. Supports Autonomous
-  and Collaborative modes with numbered phases (0-5) and explicit gate criteria.
+  Reproduction Steps, and Fix Strategy. Supports Autonomous and Collaborative modes with numbered
+  phases (0-5) and explicit gate criteria.
 ---
 
 # Debugging Skill
@@ -25,8 +25,7 @@ description: |
 7. **NEVER** skip reproduction phase even if bug seems obvious
 8. **NEVER** implement fixes automatically - always show output summary at the end
 9. **ALWAYS** classify severity (CRITICAL/HIGH/MEDIUM/LOW) for root cause findings
-10. **MUST** generate failing test case for TDD integration with Implementing skill
-11. **NEVER** mark checklist items as done - ALL checkboxes MUST remain unchecked `[ ]`
+10. **NEVER** mark checklist items as done - ALL checkboxes MUST remain unchecked `[ ]`
 
 ---
 
@@ -37,8 +36,8 @@ Phase 0: Initialization    → Create spec file, detect issue type, select mode
 Phase 1: Reproduction      → Validate bug, document steps, capture environment
 Phase 2: Investigation     → 5 parallel scouter agents (specialized tracks)
 Phase 3: Root Cause Analysis → Adaptive: 5 Whys (simple) or Fishbone (complex)
-Phase 4: Fix Strategy      → Propose fix options, assess risk, generate failing test
-Phase 5: Specification     → Compile full spec, show summary with TDD handoff
+Phase 4: Fix Strategy      → Propose fix options, assess risk, define verification criteria
+Phase 5: Specification     → Compile full spec, show summary
 ```
 
 ---
@@ -482,64 +481,33 @@ Apply 6Ms analysis adapted for software:
 **Overall Fix Risk**: LOW | MEDIUM | HIGH
 ```
 
-**STEP 3**: Generate failing test case (CRITICAL for TDD)
+**STEP 3**: Define verification criteria
 
 ```markdown
-### Verification Test Case
+### Verification Criteria
 
-**Test Name**: test_{bug_description}_should_{expected_behavior}
+**Description**: How to verify that {bug} is fixed
 
-**Description**: Verify that {bug} is fixed by confirming {expected behavior}
+**Verification Steps**:
 
-**Preconditions**:
-
-1. {setup step 1}
-2. {setup step 2}
-
-**Test Steps**:
-
-1. {action 1}
-2. {action 2}
-3. {trigger action}
-
-**Assertions**:
-
-- [ ] {assertion 1}: expect({actual}).to{matcher}({expected})
-- [ ] {assertion 2}: expect({actual}).to{matcher}({expected})
+1. {verification step 1}
+2. {verification step 2}
+3. {verification step 3}
 
 **Expected Result (After Fix)**: {what should happen}
-**Actual Result (Before Fix)**: {what currently happens - FAILS}
-
-**Framework-Agnostic Code Skeleton**:
-
-\`\`\`{language}
-describe('{Component/Function under test}', () => {
-  it('should {expected behavior} when {condition}', () => {
-    // Arrange
-    {setup code}
-
-    // Act
-    {action code}
-
-    // Assert
-    expect({actual}).toBe({expected});
-  });
-});
-\`\`\`
-
-**TDD Status**: RED (Test should FAIL before fix is applied)
+**Current Result (Before Fix)**: {what currently happens}
 ```
 
 ### Exit Criteria
 
 - [ ] At least 2 fix options documented
 - [ ] Risk assessment complete
-- [ ] Failing test case generated
+- [ ] Verification criteria defined
 - [ ] Recommended fix identified
 
 ### Gate 4→5 Decision
 
-- **GO**: Fix options documented, test case ready
+- **GO**: Fix options documented, verification criteria ready
 - **HOLD**: Fix strategy unclear, need review
 - **RECYCLE**: Root cause reassessment needed
 
@@ -551,7 +519,7 @@ describe('{Component/Function under test}', () => {
 
 - Phase 4 complete
 - Fix strategy documented
-- Test case generated
+- Verification criteria defined
 
 ### Actions
 
@@ -569,7 +537,6 @@ describe('{Component/Function under test}', () => {
 - [ ] Spec file complete with all sections
 - [ ] Output Summary displayed
 - [ ] User informed that fix NOT implemented
-- [ ] TDD handoff instructions provided
 
 ---
 
@@ -605,24 +572,10 @@ Recommended Fix:
 
 ---
 
-TDD Verification Test:
-- Test: test_{name}
-- Status: RED (Fails before fix)
-- Framework: {framework-agnostic}
-
----
-
 Next Steps:
 
-Option A - Implement fix with TDD workflow:
+Option A - Implement fix:
   /implementing .claude/.specs/debugging-{slug}-{timestamp}.md
-
-  The Implementing skill will:
-  1. Create the failing test case
-  2. Run test (should FAIL - RED)
-  3. Apply the fix
-  4. Run test (should PASS - GREEN)
-  5. Refactor if needed
 
 Option B - Review specification:
   Open the spec file for detailed analysis

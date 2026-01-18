@@ -611,15 +611,8 @@ Migration Plan:
 
 Next Steps:
 
-Option A - Implement refactoring with TDD workflow:
+Option A - Implement refactoring:
   /implementing .claude/.specs/refactoring-{slug}-{timestamp}.md
-
-  The Implementing skill will:
-  1. Create characterization tests (verify GREEN)
-  2. Apply refactoring step by step
-  3. Run tests after each step (verify still GREEN)
-  4. Complete refactoring
-  5. Run full test suite
 
 Option B - Review specification:
   Open the spec file for detailed analysis

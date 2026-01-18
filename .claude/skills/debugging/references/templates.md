@@ -315,45 +315,17 @@ tags:
 
 **Overall Fix Risk**: {LOW/MEDIUM/HIGH}
 
-### Verification Test Case
+### Verification Criteria
 
-**Test Name**: test_{bug_description}_should_{expected_behavior}
+**Description**: How to verify that {bug} is fixed
 
-**Description**: Verify that {bug} is fixed by confirming {expected behavior}
-
-**Preconditions**:
-1. {setup step 1}
-2. {setup step 2}
-
-**Test Steps**:
-1. {action 1}
-2. {action 2}
-3. {trigger action}
-
-**Assertions** (CRITICAL: ALL checkboxes MUST remain UNCHECKED `[ ]` - this is a specification, NOT implementation):
-- [ ] {assertion 1}: expect({actual}).to{matcher}({expected})
-- [ ] {assertion 2}: expect({actual}).to{matcher}({expected})
+**Verification Steps**:
+1. {verification step 1}
+2. {verification step 2}
+3. {verification step 3}
 
 **Expected Result (After Fix)**: {what should happen}
-**Actual Result (Before Fix)**: {what currently happens - FAILS}
-
-**Framework-Agnostic Code Skeleton**:
-```{language}
-describe('{Component/Function under test}', () => {
-  it('should {expected behavior} when {condition}', () => {
-    // Arrange
-    {setup code}
-
-    // Act
-    {action code}
-
-    // Assert
-    expect({actual}).toBe({expected});
-  });
-});
-```
-
-**TDD Status**: RED (Test should FAIL before fix is applied)
+**Current Result (Before Fix)**: {what currently happens}
 
 ---
 
@@ -370,14 +342,12 @@ describe('{Component/Function under test}', () => {
 - **Risk**: {LOW/MEDIUM/HIGH}
 - **Effort**: {estimate}
 
-### TDD Handoff
+### Implementation Handoff
 
 The Implementing skill should:
-1. Create the failing test case from skeleton
-2. Run test (should FAIL - RED)
-3. Apply FIX-001
-4. Run test (should PASS - GREEN)
-5. Run regression tests
+1. Apply FIX-001
+2. Verify using the verification criteria
+3. Run regression tests
 
 ---
 

@@ -250,8 +250,7 @@ Each gate follows this structure:
 | 3 | Approach type specified | patch, refactor, or redesign |
 | 4 | Affected files listed | What needs to change |
 | 5 | Risk level assessed | LOW, MEDIUM, or HIGH |
-| 6 | Failing test case generated | Framework-agnostic skeleton |
-| 7 | TDD status marked | RED (test should fail before fix) |
+| 6 | Verification criteria defined | How to verify fix works |
 
 ### Should-Meet Criteria (Recommended)
 
@@ -260,7 +259,7 @@ Each gate follows this structure:
 | 1 | Effort estimated | Hours or days |
 | 2 | Pros/cons documented | For each option |
 | 3 | Risk mitigation identified | How to reduce risk |
-| 4 | Test assertions clear | What to verify |
+| 4 | Verification steps clear | What to verify |
 | 5 | User confirmed strategy (collaborative) | Explicit confirmation |
 
 ### Gate Decisions
@@ -269,12 +268,12 @@ Each gate follows this structure:
 
 - At least 2 fix options documented
 - Risk assessment complete
-- Failing test case ready
+- Verification criteria ready
 - Ready for specification
 
 **HOLD Conditions:**
 
-- Cannot generate test case
+- Cannot define verification criteria
 - Risk too high without mitigation
 - Action: Refine fix strategy or request user guidance
 
@@ -300,7 +299,7 @@ Each gate follows this structure:
 | - | --------- | ------------ |
 | 1 | Bug summary complete | 2-3 sentence overview |
 | 2 | Recommended fix documented | Clear action plan |
-| 3 | TDD handoff ready | Test case with skeleton |
+| 3 | Verification criteria ready | How to verify fix |
 | 4 | Output summary displayed | Formatted summary shown to user |
 | 5 | Status set to complete | Spec file status: complete |
 | 6 | No auto-implementation | Explicitly stated that fix NOT implemented |
@@ -322,13 +321,12 @@ Each gate follows this structure:
 - Output summary displayed to user
 - User informed that implementation NOT started
 - Spec file marked as complete
-- TDD handoff instructions provided
 
 **HOLD Conditions:**
 
 - Missing sections in spec
 - Summary incomplete
-- Test case invalid
+- Verification criteria invalid
 - Action: Complete missing items
 
 ---
@@ -423,14 +421,14 @@ User Interaction at EVERY Gate:
 
 - [ ] At least 2 fix options
 - [ ] Risk assessed
-- [ ] Failing test case generated
+- [ ] Verification criteria defined
 - [ ] Recommended fix identified
       → If all: **GO**
 
 ### Phase 5→Complete Quick Check
 
 - [ ] Bug summary written
-- [ ] TDD handoff ready
+- [ ] Verification criteria ready
 - [ ] Output summary displayed
 - [ ] Status: complete
       → If all: **COMPLETE**
