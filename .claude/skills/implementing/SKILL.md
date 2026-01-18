@@ -5,39 +5,58 @@
 **YOU MUST FOLLOW THESE RULES WITHOUT EXCEPTION:**
 
 1. **ALWAYS** read spec file BEFORE any implementation
-2. **MUST** create Phase-level TodoWrite items FIRST (Phase 0, 1, 2) before any work
-3. **ALWAYS** update spec status to `implementing` at start of Phase 0
-4. **MUST** invoke Planning skill at the **START of Phase 1** (NOT in Phase 0)
-5. **NEVER** stop after planning skill returns - Planning todos are **SUB-TODOS of Phase 1**
-6. **ALWAYS** execute all sub-todos from Planning, then mark Phase 1 as completed
-7. **ALWAYS** update spec status to `implemented` on completion
-8. **ALWAYS** mark checkboxes `[x]` as tasks complete (both spec and TodoWrite)
-9. **NEVER** skip quality checks unless explicitly told
-10. **ALWAYS** run format/lint with --fix flags first
-11. **MUST** use AskUserQuestion when multiple specs match
-12. **MUST** detect project language before quality checks
-13. **NEVER** implement code not specified in spec
-14. **ALWAYS** display summary at completion
+2. **⚠️ MUST confirm spec file with user before updating status** (even if only 1 match)
+3. **ALWAYS** update spec status to `implementing` ONLY after user confirms
+4. **MUST** use EnterPlanMode at the **START of Phase 1** to plan implementation
+5. **MUST** write plan to `.claude/.plans/` directory with clear task breakdown
+6. **MUST** use ExitPlanMode to get user approval before proceeding to Phase 2
+7. **AFTER plan approval**: Create TodoWrite with sub-tasks from approved plan
+8. **ALWAYS** execute approved plan in Phase 2
+9. **⚠️ MUST update spec file checkbox `[x]` IMMEDIATELY after completing each task**
+10. **ALWAYS** update spec status to `implemented` on completion
+11. **ALWAYS** mark todos as completed in TodoWrite after each task
+12. **NEVER** skip quality checks unless explicitly told
+13. **ALWAYS** run format/lint with --fix flags first
+14. **MUST** detect project language before quality checks
+15. **NEVER** implement code not specified in spec
+16. **ALWAYS** display summary at completion
 
 ---
 
-## PHASE-LEVEL TODO TRACKING
+## PHASE TRACKING
 
-**CRITICAL**: Implementing skill MUST create its OWN phase-level todos at the START:
+**Phases are displayed in conversation text only** - NOT in TodoWrite.
+
+TodoWrite is used ONLY for sub-tasks after plan approval.
+
+### Phase Display Format
 
 ```
-TodoWrite([
-  { content: "Phase 0: Detection & Parse", status: "in_progress", activeForm: "Detecting and parsing spec" },
-  { content: "Phase 1: Execute implementation", status: "pending", activeForm: "Executing implementation" },
-  { content: "Phase 2: Verify and complete", status: "pending", activeForm: "Verifying implementation" }
-])
+═══════════════════════════════════════
+📍 PHASE 0: Detection & Parse
+═══════════════════════════════════════
+[actions...]
+
+═══════════════════════════════════════
+📍 PHASE 1: Plan (EnterPlanMode)
+═══════════════════════════════════════
+[planning...]
+
+═══════════════════════════════════════
+📍 PHASE 2: Execute
+═══════════════════════════════════════
+[executing sub-tasks with TodoWrite...]
+
+═══════════════════════════════════════
+📍 PHASE 3: Verify
+═══════════════════════════════════════
+[quality checks...]
 ```
 
-**Why this matters:**
-- Planning skill creates sub-todos for Phase 1 tasks
-- When Planning returns, Implementing skill sees Phase 1 is still `in_progress`
-- Implementing skill continues executing sub-todos until Phase 1 is done
-- This prevents the agent from stopping after Planning returns
+**Why this approach:**
+- EnterPlanMode manages its own TodoWrite during planning
+- Avoids conflict between phase todos and plan mode todos
+- Sub-tasks from approved plan are tracked via TodoWrite in Phase 2
 
 ---
 
@@ -45,8 +64,9 @@ TodoWrite([
 
 ```
 Phase 0: Detection & Parse → Detect mode, load spec, update status, determine strategy
-Phase 1: Execute           → Invoke Planning → IMMEDIATELY execute todos → Update checkboxes
-Phase 2: Verify            → Run quality checks, update status, display summary
+Phase 1: Plan              → EnterPlanMode → Write plan → ExitPlanMode (user approval)
+Phase 2: Execute           → Execute approved plan → Update checkboxes
+Phase 3: Verify            → Run quality checks, update status, display summary
 ```
 
 ```mermaid
@@ -73,12 +93,18 @@ flowchart TB
         UpdateStatus1 --> DetermineStrategy[Determine Strategy by spec_type]
     end
 
-    subgraph "Phase 1: Execute"
-        DetermineStrategy --> InvokePlanning[INVOKE Skill: planning]
-        InvokePlanning --> TodoCreated[TodoWrite Items Created]
-        TodoCreated --> ImmediateExec[IMMEDIATELY Execute - NO STOP]
+    subgraph "Phase 1: Plan"
+        DetermineStrategy --> EnterPlan[EnterPlanMode]
+        EnterPlan --> ExploreCode[Explore codebase]
+        ExploreCode --> WritePlan[Write plan to .claude/.plans/]
+        WritePlan --> ExitPlan[ExitPlanMode - request approval]
+        ExitPlan --> UserApproval{User Approval?}
+        UserApproval -->|Rejected| RevisesPlan[Revise Plan]
+        RevisesPlan --> WritePlan
+    end
 
-        ImmediateExec --> SelectStrategy{Apply Strategy}
+    subgraph "Phase 2: Execute"
+        UserApproval -->|Approved| SelectStrategy{Apply Strategy}
 
         SelectStrategy -->|brainstorming| ExecBrain[Create Structure + Write Code]
         SelectStrategy -->|reviewing| ExecReview[Fix CRITICAL/HIGH Issues]
@@ -91,7 +117,7 @@ flowchart TB
         ExecDebug --> UpdateCheckbox
     end
 
-    subgraph "Phase 2: Verify"
+    subgraph "Phase 3: Verify"
         UpdateCheckbox --> DetectLang[Detect Project Language]
         DetectLang --> QualityCheck[Run Quality Checks]
 
@@ -118,14 +144,12 @@ flowchart TB
 
 ### Actions
 
-**STEP 0: Create Phase-Level Todos (MANDATORY FIRST STEP)**
+**STEP 0: Display Phase Header**
 
 ```
-TodoWrite([
-  { content: "Phase 0: Detection & Parse", status: "in_progress", activeForm: "Detecting and parsing spec" },
-  { content: "Phase 1: Execute implementation", status: "pending", activeForm: "Executing implementation" },
-  { content: "Phase 2: Verify and complete", status: "pending", activeForm: "Verifying implementation" }
-])
+═══════════════════════════════════════
+📍 PHASE 0: Detection & Parse
+═══════════════════════════════════════
 ```
 
 **STEP 1: Mode Detection**
@@ -153,6 +177,23 @@ ELSE:
     - /implementing implement auth feature
 ```
 
+**⚠️ STEP 1.5: Confirm Spec File with User (MANDATORY)**
+
+**ALWAYS ask user to confirm before proceeding, even if only 1 match found:**
+
+```
+AskUserQuestion:
+  question: "Tìm thấy spec file: {spec_filename}. Bạn có muốn implement spec này không?"
+  options:
+    - "Yes, proceed" → Continue to STEP 2
+    - "No, cancel" → Abort implementation
+```
+
+**Why this matters:**
+- Prevents accidental implementation of wrong spec
+- User has final control before status changes
+- Allows user to review spec details before committing
+
 **STEP 2: Read and Parse Spec File**
 
 1. Use Read tool to load spec file
@@ -162,12 +203,14 @@ ELSE:
    - `related_files`: files to reference
 3. Identify primary section based on spec_type (see `references/strategies.md`)
 
-**STEP 3: Update Status**
+**STEP 3: Update Status (ONLY after user confirms)**
 
 Use Edit tool to update spec file:
 ```yaml
 status: complete → status: implementing
 ```
+
+**Note:** This step runs ONLY after user confirms in STEP 1.5
 
 **STEP 4: Determine Strategy**
 
@@ -181,76 +224,173 @@ Based on `spec_type`, identify which strategy to use in Phase 1:
 
 - [ ] Mode detected (file_reference OR natural_language)
 - [ ] Spec file loaded and parsed
+- [ ] **User confirmed spec file** (via AskUserQuestion)
 - [ ] Status updated to `implementing`
 - [ ] Strategy determined based on spec_type
 
 ### Gate 0→1 Transition
 
-**MUST update phase-level todos:**
-```
-TodoWrite([
-  { content: "Phase 0: Detection & Parse", status: "completed", activeForm: "Detecting and parsing spec" },
-  { content: "Phase 1: Execute implementation", status: "in_progress", activeForm: "Executing implementation" },
-  { content: "Phase 2: Verify and complete", status: "pending", activeForm: "Verifying implementation" }
-])
-```
-
-- **GO**: Spec parsed, strategy determined → **PROCEED TO PHASE 1**
-- **HOLD**: Multiple matches, need user selection
-- **ABORT**: No spec found or invalid format
+- **GO**: User confirmed, spec parsed, strategy determined → **PROCEED TO PHASE 1**
+- **HOLD**: Waiting for user confirmation
+- **ABORT**: User cancelled OR No spec found OR invalid format
 
 ---
 
-## Phase 1: Execute
+## Phase 1: Plan
 
 ### Entry Criteria
 
-- Phase 0 complete (marked as `completed` in TodoWrite)
-- Phase 1 is `in_progress` in TodoWrite
+- Phase 0 complete
 - Spec type and strategy identified
 - Status is `implementing`
 
 ### Actions
 
-**STEP 1: Invoke Planning Skill**
+**STEP 0: Display Phase Header**
 
 ```
-Skill(skill: "planning", args: "{spec_path}")
+═══════════════════════════════════════
+📍 PHASE 1: Plan
+═══════════════════════════════════════
 ```
 
-Planning skill will:
-- Parse spec content
-- Create TodoWrite items from Implementation Tasks / Fix Strategy / Migration Plan
-- These are **SUB-TODOS within Phase 1** (not replacement of phase todos)
-- Return structured task breakdown
-
-**⚠️ CRITICAL: PLANNING TODOS ARE SUB-TODOS**
+**STEP 1: Enter Plan Mode**
 
 ```
-After Planning skill returns:
-→ Planning todos are SUB-TASKS of Phase 1
-→ Phase 1 is still "in_progress" in YOUR phase-level tracking
-→ You MUST execute ALL sub-todos
-→ Only mark Phase 1 "completed" after ALL sub-todos are done
+EnterPlanMode()
 ```
 
-**STEP 2: Execute Sub-Todos from Planning**
+This transitions into plan mode where you:
+- Explore the codebase to understand existing patterns
+- Read related files mentioned in spec
+- Design implementation approach based on spec_type strategy
 
-Execute each sub-todo sequentially:
+**STEP 2: Write Implementation Plan**
+
+Create a plan file in `.claude/.plans/` directory:
 
 ```
-FOR each sub-todo from Planning:
-    1. Mark sub-todo as in_progress
+Plan file: .claude/.plans/impl-{spec_slug}-{timestamp}.md
+```
+
+Plan must include:
+1. **Overview**: What will be implemented
+2. **Files to Create/Modify**: List with descriptions
+3. **Implementation Steps**: Numbered task breakdown
+4. **Dependencies**: Order of operations
+5. **Verification**: How to test each step
+
+**STEP 3: Exit Plan Mode for User Approval**
+
+```
+ExitPlanMode(allowedPrompts: [
+  { tool: "Bash", prompt: "run tests" },
+  { tool: "Bash", prompt: "run build" },
+  { tool: "Bash", prompt: "run format/lint" }
+])
+```
+
+User will review the plan and:
+- **Approve**: Proceed to Phase 2
+- **Request changes**: Revise plan and re-submit
+- **Reject**: Abort implementation
+
+### Exit Criteria
+
+- [ ] EnterPlanMode invoked
+- [ ] Plan written to `.claude/.plans/` directory
+- [ ] ExitPlanMode called with appropriate permissions
+- [ ] User has approved the plan
+
+### Gate 1→2 Transition
+
+**After user approves plan, create TodoWrite with sub-tasks ONLY:**
+
+```
+TodoWrite([
+  { content: "Task-001: [description]", status: "pending", activeForm: "[doing description]" },
+  { content: "Task-002: [description]", status: "pending", activeForm: "[doing description]" },
+  ...
+])
+```
+
+- **GO**: User approved plan → **PROCEED TO PHASE 2**
+- **HOLD**: User requests plan revision
+- **ABORT**: User rejects implementation
+
+---
+
+## Phase 2: Execute
+
+### Entry Criteria
+
+- Phase 1 complete (plan approved by user)
+- Implementation plan available in `.claude/.plans/`
+
+### Actions
+
+**STEP 0: Display Phase Header & Create Sub-Task Todos**
+
+```
+═══════════════════════════════════════
+📍 PHASE 2: Execute
+═══════════════════════════════════════
+```
+
+Create TodoWrite with sub-tasks from approved plan:
+```
+TodoWrite([
+  { content: "Task-001: [description]", status: "pending", activeForm: "[doing]" },
+  { content: "Task-002: [description]", status: "pending", activeForm: "[doing]" },
+  ...
+])
+```
+
+**STEP 1: Execute Approved Plan**
+
+Execute each sub-task sequentially:
+
+```
+FOR each sub-task in approved plan:
+    1. Mark sub-task as in_progress in TodoWrite
     2. Execute the task based on spec_type strategy
-    3. Mark sub-todo as completed
-    4. Update corresponding checkbox in spec file: [ ] → [x]
+    3. Mark sub-task as completed in TodoWrite
+    4. ⚠️ IMMEDIATELY update checkbox in spec file (see STEP 2)
 
-WHEN all sub-todos completed:
-    → Phase 1 is done
-    → Proceed to Gate 1→2
+WHEN all sub-tasks completed:
+    → Phase 2 is done
+    → Proceed to Gate 2→3
 ```
 
-**STEP 3: Apply Strategy Based on spec_type**
+**⚠️ STEP 2: Update Spec File Checkboxes (MANDATORY AFTER EACH TASK)**
+
+After completing EACH task, you MUST update the corresponding checkbox in the spec file:
+
+```
+Use Edit tool:
+  file_path: {spec_file_path}
+  old_string: "- [ ] Task description"
+  new_string: "- [x] Task description"
+```
+
+**Example:**
+```
+# Before task completion
+- [ ] Implement user registration endpoint
+- [ ] Add input validation
+
+# After completing "Implement user registration endpoint"
+- [x] Implement user registration endpoint  ← Updated immediately
+- [ ] Add input validation
+```
+
+**Why this matters:**
+- Spec file is the source of truth for implementation progress
+- Checkboxes provide audit trail of what was completed
+- Allows resuming implementation if interrupted
+- User can verify progress by reading spec file
+
+**STEP 2: Apply Strategy Based on spec_type**
 
 Refer to `references/strategies.md` for detailed execution logic.
 
@@ -287,36 +427,39 @@ Refer to `references/strategies.md` for detailed execution logic.
 
 ### Exit Criteria
 
-- [ ] Planning skill invoked, sub-todos created
-- [ ] All sub-todos executed and completed
-- [ ] All spec checkboxes marked [x]
+- [ ] All tasks from approved plan executed
+- [ ] **All spec file checkboxes marked `[x]`** (verify by re-reading spec file)
+- [ ] All TodoWrite sub-tasks marked `completed`
 - [ ] Code implementation matches spec
 
-### Gate 1→2 Transition
+### Gate 2→3 Transition
 
-**MUST update phase-level todos:**
-```
-TodoWrite([
-  { content: "Phase 0: Detection & Parse", status: "completed", activeForm: "Detecting and parsing spec" },
-  { content: "Phase 1: Execute implementation", status: "completed", activeForm: "Executing implementation" },
-  { content: "Phase 2: Verify and complete", status: "in_progress", activeForm: "Verifying implementation" }
-])
-```
+**Before proceeding, verify:**
+1. All sub-tasks in TodoWrite are `completed`
+2. All checkboxes in spec file are `[x]` (use Read tool to verify)
 
-- **GO**: All sub-todos completed → **PROCEED TO PHASE 2**
+- **GO**: All tasks completed → **PROCEED TO PHASE 3**
 - **HOLD**: Blocked by unclear requirement (use AskUserQuestion)
-- **ABORT**: Fundamental issue with spec
+- **ABORT**: Fundamental issue with implementation
 
 ---
 
-## Phase 2: Verify
+## Phase 3: Verify
 
 ### Entry Criteria
 
-- Phase 1 complete
+- Phase 2 complete
 - All implementation tasks done
 
 ### Actions
+
+**STEP 0: Display Phase Header**
+
+```
+═══════════════════════════════════════
+📍 PHASE 3: Verify
+═══════════════════════════════════════
+```
 
 **STEP 1: Detect Project Language**
 
@@ -366,18 +509,9 @@ Output completion summary (see Output Summary Format below).
 - [ ] Spec status updated to `implemented`
 - [ ] Summary displayed
 
-### Gate 2→Complete Transition
+### Gate 3→Complete Transition
 
-**MUST update phase-level todos:**
-```
-TodoWrite([
-  { content: "Phase 0: Detection & Parse", status: "completed", activeForm: "Detecting and parsing spec" },
-  { content: "Phase 1: Execute implementation", status: "completed", activeForm: "Executing implementation" },
-  { content: "Phase 2: Verify and complete", status: "completed", activeForm: "Verifying implementation" }
-])
-```
-
-- **GO**: All checks passed, all phases completed → **IMPLEMENTATION COMPLETE**
+- **GO**: All checks passed → **IMPLEMENTATION COMPLETE**
 - **HOLD**: Quality issues need manual fix
 - **ABORT**: Critical build failure
 
@@ -498,6 +632,11 @@ How would you like to proceed?
 - **references/strategies.md**: Detailed execution strategies per spec_type
 - **references/quality-checks.md**: Multi-language quality check commands
 
+## Directory Structure
+
+- **`.claude/.specs/`**: Spec files from producer skills (brainstorming, debugging, etc.)
+- **`.claude/.plans/`**: Implementation plan files created during Phase 1
+
 ---
 
 ## Examples
@@ -507,37 +646,63 @@ How would you like to proceed?
 ```
 User: /implementing .claude/.specs/brainstorming-auth-feature-1801261458.md
 
-[CREATE PHASE TODOS]
-TodoWrite:
-  - Phase 0: Detection & Parse (in_progress)
-  - Phase 1: Execute implementation (pending)
-  - Phase 2: Verify and complete (pending)
-
-Phase 0: Detection & Parse
+═══════════════════════════════════════
+📍 PHASE 0: Detection & Parse
+═══════════════════════════════════════
 - Mode: file_reference
-- Spec loaded: brainstorming-auth-feature-1801261458.md
+- Spec found: brainstorming-auth-feature-1801261458.md
+
+[AskUserQuestion]: "Tìm thấy spec file: brainstorming-auth-feature-1801261458.md. Bạn có muốn implement spec này không?"
+- User: "Yes, proceed"
+
 - Status updated: implementing
 - Strategy determined: brainstorming (Create & Write)
 
-[TRANSITION: Phase 0 → completed, Phase 1 → in_progress]
+═══════════════════════════════════════
+📍 PHASE 1: Plan
+═══════════════════════════════════════
+- EnterPlanMode()
+- Exploring codebase...
+- Reading related files from spec...
+- Writing plan to .claude/.plans/impl-auth-feature-1801261500.md
+- Plan includes:
+  1. Create auth module structure
+  2. Implement user registration
+  3. Implement login endpoint
+- ExitPlanMode(allowedPrompts: [...])
+- Waiting for user approval...
+- User: "Approved"
 
-Phase 1: Execute
-- Invoking Planning skill...
-- Planning creates SUB-TODOS:
-  - [Phase 1] Create auth module structure
-  - [Phase 1] Implement user registration
-  - [Phase 1] Implement login endpoint
-  ...
-- Executing sub-todos (Phase 1 still in_progress)...
-  [x] Create auth module structure
-  [x] Implement user registration
-  [x] Implement login endpoint
-  ...
-- All sub-todos completed
+═══════════════════════════════════════
+📍 PHASE 2: Execute
+═══════════════════════════════════════
 
-[TRANSITION: Phase 1 → completed, Phase 2 → in_progress]
+TodoWrite([
+  { content: "Task-001: Create auth module structure", status: "in_progress", ... },
+  { content: "Task-002: Implement user registration", status: "pending", ... },
+  { content: "Task-003: Implement login endpoint", status: "pending", ... }
+])
 
-Phase 2: Verify
+- Executing Task-001...
+  [code implementation...]
+  → Edit spec file: "- [ ] Create auth module structure" → "- [x] Create auth module structure"
+  → TodoWrite: Task-001 completed
+
+- Executing Task-002...
+  [code implementation...]
+  → Edit spec file: "- [ ] Implement user registration" → "- [x] Implement user registration"
+  → TodoWrite: Task-002 completed
+
+- Executing Task-003...
+  [code implementation...]
+  → Edit spec file: "- [ ] Implement login endpoint" → "- [x] Implement login endpoint"
+  → TodoWrite: Task-003 completed
+
+- All sub-tasks completed
+
+═══════════════════════════════════════
+📍 PHASE 3: Verify
+═══════════════════════════════════════
 - Language detected: typescript
 - Running quality checks...
   - Format: PASS
@@ -545,12 +710,9 @@ Phase 2: Verify
   - Build: PASS
 - Status updated: implemented
 
-[TRANSITION: Phase 2 → completed]
-
 ========================================
 IMPLEMENTATION COMPLETE
 ========================================
-...
 ```
 
 ### Example 2: Natural Language Mode
@@ -558,43 +720,64 @@ IMPLEMENTATION COMPLETE
 ```
 User: /implementing fix the payment validation bug
 
-[CREATE PHASE TODOS]
-TodoWrite:
-  - Phase 0: Detection & Parse (in_progress)
-  - Phase 1: Execute implementation (pending)
-  - Phase 2: Verify and complete (pending)
-
-Phase 0: Detection & Parse
+═══════════════════════════════════════
+📍 PHASE 0: Detection & Parse
+═══════════════════════════════════════
 - Mode: natural_language
 - Keywords: payment, validation, bug
 - Found matches:
   1. debugging-payment-validation-1801251200.md
   2. debugging-payment-error-1801241530.md
-- [AskUserQuestion]: Which spec to implement?
+
+[AskUserQuestion]: "Tìm thấy 2 spec files. Bạn muốn implement spec nào?"
 - User selected: debugging-payment-validation-1801251200.md
+
+[AskUserQuestion]: "Xác nhận implement spec: debugging-payment-validation-1801251200.md?"
+- User: "Yes, proceed"
+
 - Status updated: implementing
 - Strategy determined: debugging (Fix & Verify)
 
-[TRANSITION: Phase 0 → completed, Phase 1 → in_progress]
+═══════════════════════════════════════
+📍 PHASE 1: Plan
+═══════════════════════════════════════
+- EnterPlanMode()
+- Reading Root Cause Analysis from spec...
+- Designing fix approach...
+- Writing plan to .claude/.plans/impl-payment-validation-1801251230.md
+- Plan includes:
+  1. Implement FIX-001: Add null check
+  2. Run verification steps
+- ExitPlanMode(allowedPrompts: [...])
+- Waiting for user approval...
+- User: "Approved"
 
-Phase 1: Execute
-- Invoking Planning skill...
-- Planning creates SUB-TODOS:
-  - [Phase 1] Implement FIX-001
-  - [Phase 1] Run verification steps
-- Executing sub-todos (Phase 1 still in_progress)...
-  [x] Implement FIX-001: Add null check for payment amount
-  [x] Payment with valid amount: PASS
-  [x] Payment with null amount: PASS (no longer crashes)
-- All sub-todos completed
+═══════════════════════════════════════
+📍 PHASE 2: Execute
+═══════════════════════════════════════
 
-[TRANSITION: Phase 1 → completed, Phase 2 → in_progress]
+TodoWrite([
+  { content: "FIX-001: Add null check for payment amount", status: "in_progress", ... },
+  { content: "VERIFY: Run verification steps", status: "pending", ... }
+])
 
-Phase 2: Verify
+- Executing FIX-001...
+  [code implementation...]
+  → Edit spec file: "- [ ] Implement FIX-001" → "- [x] Implement FIX-001"
+  → TodoWrite: FIX-001 completed
+
+- Executing VERIFY...
+  [running verification...]
+  → Edit spec file: "- [ ] Run verification steps" → "- [x] Run verification steps"
+  → TodoWrite: VERIFY completed
+
+- All sub-tasks completed
+
+═══════════════════════════════════════
+📍 PHASE 3: Verify
+═══════════════════════════════════════
 - Running quality checks...
 - Status updated: implemented
-
-[TRANSITION: Phase 2 → completed]
 
 ========================================
 IMPLEMENTATION COMPLETE

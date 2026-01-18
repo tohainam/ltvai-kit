@@ -4,7 +4,7 @@ description: |
   Structured ideation skill for new features, architecture decisions, and system design.
   Use when: (1) User requests a new feature or capability, (2) User needs architecture planning,
   (3) User wants to explore implementation approaches, (4) User provides vague/short requests
-  that need clarification, (5) User explicitly invokes /brainstorm command.
+  that need clarification, (5) User explicitly invokes /brainstorming command.
 
   Produces specification files in .claude/.specs/ containing architecture diagrams (Mermaid),
   data models, API contracts, and implementation task lists. Supports Autonomous and

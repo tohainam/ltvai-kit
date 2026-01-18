@@ -105,16 +105,23 @@ input=$(cat)
 current_path=$(get_short_path "$(pwd)")
 
 # -----------------------------------------------------------------------------
-# Git Information (branch only)
+# Git Information (branch only) - Optimized for performance
 # -----------------------------------------------------------------------------
 git_info=""
-if command_exists git && git rev-parse --git-dir >/dev/null 2>&1; then
-    # Git options to skip fsmonitor for performance
+if command_exists git && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    # Performance optimizations:
+    # 1. Skip fsmonitor to avoid subprocess overhead
+    # 2. Use rev-parse --abbrev-ref which is faster than symbolic-ref
+    # 3. Single command with fallback in same subshell
     GIT_OPTS="-c core.useBuiltinFSMonitor=false -c core.fsmonitor=false"
 
-    # Get branch name
-    branch=$(git $GIT_OPTS symbolic-ref --short HEAD 2>/dev/null || \
-             git $GIT_OPTS rev-parse --short HEAD 2>/dev/null)
+    # Get branch name (fast path with fallback for detached HEAD)
+    branch=$(git $GIT_OPTS rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+    # Handle detached HEAD state
+    if [[ "$branch" == "HEAD" ]]; then
+        branch=$(git $GIT_OPTS rev-parse --short HEAD 2>/dev/null)
+    fi
 
     if [[ -n "$branch" ]]; then
         git_info=$(printf " ${COLOR_GRAY}on${COLOR_RESET} \033[${COLOR_GREEN}m%s${COLOR_RESET}" "$branch")
