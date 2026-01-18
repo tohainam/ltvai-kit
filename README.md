@@ -1,10 +1,10 @@
-# LTVai-Kit
+# LTVAI-Kit
 
 A structured Claude Code skill system for software development workflows.
 
 ## Overview
 
-LTVai-Kit provides a **Producer → Consumer** workflow pattern for Claude Code:
+LTVAI-Kit provides a **Producer → Consumer** workflow pattern for Claude Code:
 
 ```mermaid
 flowchart LR
@@ -56,8 +56,8 @@ flowchart LR
 
 ### Consumer Skill - Execute Specifications
 
-| Skill           | Purpose                        | Command                                     |
-| --------------- | ------------------------------ | ------------------------------------------- |
+| Skill           | Purpose                        | Command                             |
+| --------------- | ------------------------------ | ----------------------------------- |
 | `/implementing` | Implement specs from producers | `/implementing .specs/spec-file.md` |
 
 ## Workflow
