@@ -89,9 +89,9 @@ export async function runInit(options: InitOptions): Promise<void> {
     {
       title: `Cloning repository (branch: ${branch})`,
       task: async (message) => {
-        message('Connecting to GitHub...');
+        message('Connecting to GitHub via SSH...');
+        await new Promise((r) => setTimeout(r, 100)); // Allow spinner to show
         tempDir = await cloneRepo(branch, dry);
-        message('Repository cloned');
       },
     },
   ]);
@@ -116,11 +116,13 @@ export async function runInit(options: InitOptions): Promise<void> {
 
           // Copy config
           message('Copying configuration files...');
+          await new Promise((r) => setTimeout(r, 100));
           await strategy.copyConfig(tempDir, targetPath, dry);
 
           // Setup MCP if servers selected
           if (selectedServers.length > 0 && strategy.available) {
-            message('Setting up MCP servers...');
+            message('Configuring MCP servers...');
+            await new Promise((r) => setTimeout(r, 100));
             await setupMCPConfig(tempDir, targetPath, selectedServers, strategy, dry);
           }
         },
@@ -187,14 +189,16 @@ export async function runUpdate(options: UpdateOptions): Promise<void> {
     {
       title: `Cloning repository (branch: ${branch})`,
       task: async (message) => {
-        message('Connecting to GitHub...');
+        message('Connecting to GitHub via SSH...');
+        await new Promise((r) => setTimeout(r, 100)); // Allow spinner to show
         tempDir = await cloneRepo(branch, dry);
-        message('Repository cloned');
       },
     },
     {
       title: 'Updating Claude Code configuration',
       task: async (message) => {
+        message('Analyzing changes...');
+        await new Promise((r) => setTimeout(r, 100));
         message('Copying updated files...');
         await claudeCodeStrategy.copyConfig(tempDir, targetPath, dry);
       },

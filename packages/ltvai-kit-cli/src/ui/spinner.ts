@@ -1,4 +1,5 @@
 import * as p from '@clack/prompts';
+import pc from 'picocolors';
 
 export interface TaskResult {
   title: string;
@@ -25,6 +26,7 @@ export async function runTasks<T>(
         status: 'skipped',
         message: 'Skipped',
       });
+      p.log.warn(`${pc.dim('○')} ${task.title} ${pc.dim('- Skipped')}`);
       continue;
     }
 
@@ -32,15 +34,15 @@ export async function runTasks<T>(
     s.start(task.title);
 
     try {
-      await task.task((msg) => s.message(msg));
-      s.stop(`${task.title} - Done`);
+      await task.task((msg) => s.message(`${task.title} ${pc.dim(`- ${msg}`)}`));
+      s.stop(pc.green(`${task.title}`));
       results.push({
         title: task.title,
         status: 'success',
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      s.stop(`${task.title} - Failed`);
+      s.stop(pc.red(`${task.title} - Failed`));
       results.push({
         title: task.title,
         status: 'error',
@@ -58,4 +60,24 @@ export async function runTasks<T>(
  */
 export function createSpinner() {
   return p.spinner();
+}
+
+/**
+ * Run a single task with spinner
+ */
+export async function withSpinner<T>(
+  title: string,
+  task: (updateMessage: (msg: string) => void) => Promise<T>
+): Promise<T> {
+  const s = p.spinner();
+  s.start(title);
+
+  try {
+    const result = await task((msg) => s.message(`${title} ${pc.dim(`- ${msg}`)}`));
+    s.stop(pc.green(title));
+    return result;
+  } catch (error) {
+    s.stop(pc.red(`${title} - Failed`));
+    throw error;
+  }
 }

@@ -1,10 +1,36 @@
-import { execSync } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import { REPO_URL, DEFAULT_BRANCH, TEMP_DIR_PREFIX } from '../utils/constants.js';
 import { removeDir, pathExists } from '../utils/fs-utils.js';
 import { logInfo } from '../ui/prompts.js';
+
+/**
+ * Execute command asynchronously (allows spinner to animate)
+ */
+function execAsync(command: string, args: string[]): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const proc = spawn(command, args, { stdio: 'pipe' });
+
+    let stderr = '';
+    proc.stderr?.on('data', (data) => {
+      stderr += data.toString();
+    });
+
+    proc.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(stderr || `Command failed with code ${code}`));
+      }
+    });
+
+    proc.on('error', (err) => {
+      reject(err);
+    });
+  });
+}
 
 /**
  * Clone repository to a temporary directory
@@ -22,9 +48,7 @@ export async function cloneRepo(
 
   try {
     // Clone with specific branch, shallow clone for speed
-    const command = `git clone --depth 1 --branch ${branch} ${REPO_URL} "${tempDir}"`;
-    execSync(command, { stdio: 'pipe' });
-
+    await execAsync('git', ['clone', '--depth', '1', '--branch', branch, REPO_URL, tempDir]);
     return tempDir;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
