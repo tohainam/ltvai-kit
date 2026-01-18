@@ -139,12 +139,13 @@ current_time=$(date +%H:%M:%S 2>/dev/null || date +%T)
 
 # -----------------------------------------------------------------------------
 # Context Window Progress Bar
+# Uses .context_window.used_percentage from Claude Code JSON input
 # -----------------------------------------------------------------------------
 ctx_info=""
 
 if command_exists jq; then
-    # Get percentage directly from Claude Code (correct field name)
-    pct=$(echo "$input" | jq '.context_window.used_percentage // 0' 2>/dev/null)
+    # Get used_percentage directly from JSON (this is the correct field)
+    pct=$(echo "$input" | jq -r '.context_window.used_percentage // 0' 2>/dev/null)
 
     # Convert to integer (remove decimal)
     pct=${pct%.*}
