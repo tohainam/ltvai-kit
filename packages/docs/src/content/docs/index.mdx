@@ -1,0 +1,97 @@
+---
+title: ltvai-kit
+description: Claude Code Skills Kit - Chuẩn hóa workflow phát triển với AI
+template: splash
+hero:
+  tagline: Bộ công cụ Claude Code hoàn chỉnh cho Team và Enterprise. Spec-driven development với 8 skills chuyên biệt.
+  actions:
+    - text: Bắt đầu ngay
+      link: /getting-started/quick-start/
+      icon: right-arrow
+      variant: primary
+    - text: Xem trên GitHub
+      link: https://github.com/ltvai/ltvai-kit
+      icon: external
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+## Tại sao chọn ltvai-kit?
+
+<CardGrid stagger>
+  <Card title="Spec-Driven Development" icon="document">
+    Tách biệt planning và implementation với workflow Producer → Consumer. Mọi
+    thay đổi đều bắt đầu từ specification rõ ràng.
+  </Card>
+  <Card title="8 Skills chuyên biệt" icon="puzzle">
+    Từ brainstorming đến implementation, debugging đến reviewing - mỗi skill
+    được thiết kế cho một nhiệm vụ cụ thể.
+  </Card>
+  <Card title="Team-Ready" icon="rocket">
+    Chuẩn hóa workflow cho toàn team với consistent patterns. Giảm thời gian
+    onboarding và tăng chất lượng code.
+  </Card>
+  <Card title="Extensible" icon="setting">
+    Dễ dàng customize và mở rộng theo nhu cầu dự án. Thêm skills mới hoặc điều
+    chỉnh workflow hiện có.
+  </Card>
+</CardGrid>
+
+## Workflow Overview
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  User Request   │────▶│ Producer Skills │────▶│   .claude/.specs/│
+└─────────────────┘     │  - brainstorming│     │   (spec files)   │
+                        │  - debugging    │     └────────┬─────────┘
+                        │  - refactoring  │              │
+                        │  - reviewing    │              ▼
+                        └─────────────────┘     ┌─────────────────┐
+                                                │ Consumer Skill  │
+                                                │  /implementing  │
+                                                └────────┬────────┘
+                                                         │
+                                                         ▼
+                                                ┌─────────────────┐
+                                                │ Code Output     │
+                                                └─────────────────┘
+```
+
+## Skills Categories
+
+### Producer Skills (4)
+
+Tạo specification files từ yêu cầu của user:
+
+| Skill           | Mục đích                           |
+| --------------- | ---------------------------------- |
+| `/brainstorming` | Ideation, feature design, architecture |
+| `/debugging`    | Bug analysis, root cause analysis  |
+| `/refactoring`  | Code smell detection, migration planning |
+| `/reviewing`    | Code review, security audit        |
+
+### Consumer Skill (1)
+
+| Skill           | Mục đích                           |
+| --------------- | ---------------------------------- |
+| `/implementing` | Execute specifications into code   |
+
+### Utility Skills (3)
+
+| Skill                   | Mục đích                           |
+| ----------------------- | ---------------------------------- |
+| `/ui-ux-pro-max`        | UI/UX design guidelines            |
+| `/mermaidjs-v11`        | Create diagrams                    |
+| `/react-best-practices` | React/Next.js optimization         |
+
+## Quick Installation
+
+```bash
+# Clone repository
+git clone https://github.com/ltvai/ltvai-kit.git
+
+# Copy .claude folder to your project
+cp -r ltvai-kit/.claude your-project/
+```
+
+Xem hướng dẫn chi tiết tại [Installation Guide](/getting-started/installation/).

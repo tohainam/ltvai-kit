@@ -8,18 +8,17 @@
 2. **⚠️ MUST confirm spec file with user before updating status** (even if only 1 match)
 3. **ALWAYS** update spec status to `implementing` ONLY after user confirms
 4. **MUST** use EnterPlanMode at the **START of Phase 1** to plan implementation
-5. **MUST** write plan to `.claude/.plans/` directory with clear task breakdown
-6. **MUST** use ExitPlanMode to get user approval before proceeding to Phase 2
-7. **AFTER plan approval**: Create TodoWrite with sub-tasks from approved plan
-8. **ALWAYS** execute approved plan in Phase 2
-9. **⚠️ MUST update spec file checkbox `[x]` IMMEDIATELY after completing each task**
-10. **ALWAYS** update spec status to `implemented` on completion
-11. **ALWAYS** mark todos as completed in TodoWrite after each task
-12. **NEVER** skip quality checks unless explicitly told
-13. **ALWAYS** run format/lint with --fix flags first
-14. **MUST** detect project language before quality checks
-15. **NEVER** implement code not specified in spec
-16. **ALWAYS** display summary at completion
+5. **MUST** use ExitPlanMode to get user approval before proceeding to Phase 2
+6. **AFTER plan approval**: Create TodoWrite with sub-tasks from approved plan
+7. **ALWAYS** execute approved plan in Phase 2
+8. **⚠️ MUST update spec file checkbox `[x]` IMMEDIATELY after completing each task**
+9. **ALWAYS** update spec status to `implemented` on completion
+10. **ALWAYS** mark todos as completed in TodoWrite after each task
+11. **NEVER** skip quality checks unless explicitly told
+12. **ALWAYS** run format/lint with --fix flags first
+13. **MUST** detect project language before quality checks
+14. **NEVER** implement code not specified in spec
+15. **ALWAYS** display summary at completion
 
 ---
 
@@ -54,8 +53,7 @@ TodoWrite is used ONLY for sub-tasks after plan approval.
 ```
 
 **Why this approach:**
-- EnterPlanMode manages its own TodoWrite during planning
-- Avoids conflict between phase todos and plan mode todos
+- EnterPlanMode manages planning phase
 - Sub-tasks from approved plan are tracked via TodoWrite in Phase 2
 
 ---
@@ -64,7 +62,7 @@ TodoWrite is used ONLY for sub-tasks after plan approval.
 
 ```
 Phase 0: Detection & Parse → Detect mode, load spec, update status, determine strategy
-Phase 1: Plan              → EnterPlanMode → Write plan → ExitPlanMode (user approval)
+Phase 1: Plan              → EnterPlanMode → Create plan → ExitPlanMode (user approval)
 Phase 2: Execute           → Execute approved plan → Update checkboxes
 Phase 3: Verify            → Run quality checks, update status, display summary
 ```
@@ -96,11 +94,11 @@ flowchart TB
     subgraph "Phase 1: Plan"
         DetermineStrategy --> EnterPlan[EnterPlanMode]
         EnterPlan --> ExploreCode[Explore codebase]
-        ExploreCode --> WritePlan[Write plan to .claude/.plans/]
-        WritePlan --> ExitPlan[ExitPlanMode - request approval]
+        ExploreCode --> CreatePlan[Create implementation plan]
+        CreatePlan --> ExitPlan[ExitPlanMode - request approval]
         ExitPlan --> UserApproval{User Approval?}
         UserApproval -->|Rejected| RevisesPlan[Revise Plan]
-        RevisesPlan --> WritePlan
+        RevisesPlan --> CreatePlan
     end
 
     subgraph "Phase 2: Execute"
@@ -265,13 +263,7 @@ This transitions into plan mode where you:
 - Read related files mentioned in spec
 - Design implementation approach based on spec_type strategy
 
-**STEP 2: Write Implementation Plan**
-
-Create a plan file in `.claude/.plans/` directory:
-
-```
-Plan file: .claude/.plans/impl-{spec_slug}-{timestamp}.md
-```
+**STEP 2: Create Implementation Plan**
 
 Plan must include:
 1. **Overview**: What will be implemented
@@ -298,7 +290,7 @@ User will review the plan and:
 ### Exit Criteria
 
 - [ ] EnterPlanMode invoked
-- [ ] Plan written to `.claude/.plans/` directory
+- [ ] Implementation plan created
 - [ ] ExitPlanMode called with appropriate permissions
 - [ ] User has approved the plan
 
@@ -325,7 +317,7 @@ TodoWrite([
 ### Entry Criteria
 
 - Phase 1 complete (plan approved by user)
-- Implementation plan available in `.claude/.plans/`
+- Implementation plan approved
 
 ### Actions
 
@@ -635,7 +627,6 @@ How would you like to proceed?
 ## Directory Structure
 
 - **`.claude/.specs/`**: Spec files from producer skills (brainstorming, debugging, etc.)
-- **`.claude/.plans/`**: Implementation plan files created during Phase 1
 
 ---
 
@@ -664,8 +655,7 @@ User: /implementing .claude/.specs/brainstorming-auth-feature-1801261458.md
 - EnterPlanMode()
 - Exploring codebase...
 - Reading related files from spec...
-- Writing plan to .claude/.plans/impl-auth-feature-1801261500.md
-- Plan includes:
+- Creating implementation plan:
   1. Create auth module structure
   2. Implement user registration
   3. Implement login endpoint
@@ -744,8 +734,7 @@ User: /implementing fix the payment validation bug
 - EnterPlanMode()
 - Reading Root Cause Analysis from spec...
 - Designing fix approach...
-- Writing plan to .claude/.plans/impl-payment-validation-1801251230.md
-- Plan includes:
+- Creating implementation plan:
   1. Implement FIX-001: Add null check
   2. Run verification steps
 - ExitPlanMode(allowedPrompts: [...])

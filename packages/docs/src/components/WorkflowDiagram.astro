@@ -1,0 +1,210 @@
+---
+/**
+ * WorkflowDiagram component - Visualizes the spec-driven development workflow
+ * Shows the flow from User Request → Producer Skills → Spec File → Consumer Skill → Code
+ */
+---
+
+<div class="workflow-container">
+  <div class="workflow-diagram">
+    <!-- User Request -->
+    <div class="workflow-node node-start">
+      <div class="node-icon">👤</div>
+      <div class="node-label">User Request</div>
+    </div>
+
+    <div class="workflow-arrow">→</div>
+
+    <!-- Producer Skills -->
+    <div class="workflow-node node-producer">
+      <div class="node-header">
+        <span class="badge badge-producer">PRODUCER</span>
+      </div>
+      <div class="node-content">
+        <code>/brainstorming</code>
+        <code>/debugging</code>
+        <code>/refactoring</code>
+        <code>/reviewing</code>
+      </div>
+    </div>
+
+    <div class="workflow-arrow">→</div>
+
+    <!-- Spec File -->
+    <div class="workflow-node node-spec">
+      <div class="node-icon">📄</div>
+      <div class="node-label">.claude/.specs/</div>
+      <div class="node-sublabel">Specification File</div>
+    </div>
+
+    <div class="workflow-arrow">→</div>
+
+    <!-- Consumer Skill -->
+    <div class="workflow-node node-consumer">
+      <div class="node-header">
+        <span class="badge badge-consumer">CONSUMER</span>
+      </div>
+      <div class="node-content">
+        <code>/implementing</code>
+      </div>
+    </div>
+
+    <div class="workflow-arrow">→</div>
+
+    <!-- Code Output -->
+    <div class="workflow-node node-end">
+      <div class="node-icon">💻</div>
+      <div class="node-label">Code Output</div>
+    </div>
+  </div>
+
+  <div class="workflow-legend">
+    <div class="legend-item">
+      <span class="badge badge-producer">PRODUCER</span>
+      <span>Creates specifications</span>
+    </div>
+    <div class="legend-item">
+      <span class="badge badge-consumer">CONSUMER</span>
+      <span>Executes specifications</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .workflow-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--sl-color-gray-6);
+    border-radius: 0.75rem;
+    overflow-x: auto;
+  }
+
+  .workflow-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: fit-content;
+    padding: 1rem 0;
+  }
+
+  .workflow-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+    border: 2px solid var(--sl-color-gray-5);
+    min-width: 120px;
+  }
+
+  .node-start,
+  .node-end {
+    border-color: var(--sl-color-accent);
+  }
+
+  .node-producer {
+    border-color: #10b981;
+  }
+
+  .node-consumer {
+    border-color: #f59e0b;
+  }
+
+  .node-spec {
+    border-style: dashed;
+    border-color: var(--sl-color-gray-4);
+  }
+
+  .node-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .node-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .node-sublabel {
+    font-size: 0.75rem;
+    color: var(--sl-color-gray-3);
+    margin-top: 0.25rem;
+  }
+
+  .node-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .node-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .node-content code {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.375rem;
+    background: var(--sl-color-gray-6);
+    border-radius: 0.25rem;
+  }
+
+  .workflow-arrow {
+    font-size: 1.5rem;
+    color: var(--sl-color-gray-3);
+    flex-shrink: 0;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-producer {
+    background: #10b981;
+    color: white;
+  }
+
+  .badge-consumer {
+    background: #f59e0b;
+    color: white;
+  }
+
+  .workflow-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 768px) {
+    .workflow-diagram {
+      flex-direction: column;
+    }
+
+    .workflow-arrow {
+      transform: rotate(90deg);
+    }
+
+    .workflow-legend {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>
