@@ -15,7 +15,7 @@ flowchart LR
         RV["/reviewing"]
     end
 
-    subgraph Specs[".claude/.specs/"]
+    subgraph Specs[".specs/"]
         S1["brainstorming-*.md"]
         S2["debugging-*.md"]
         S3["refactoring-*.md"]
@@ -58,7 +58,7 @@ flowchart LR
 
 | Skill           | Purpose                        | Command                                     |
 | --------------- | ------------------------------ | ------------------------------------------- |
-| `/implementing` | Implement specs from producers | `/implementing .claude/.specs/spec-file.md` |
+| `/implementing` | Implement specs from producers | `/implementing .specs/spec-file.md` |
 
 ## Workflow
 
@@ -69,13 +69,13 @@ flowchart LR
 /brainstorming add user authentication with OAuth
 ```
 
-Output: `.claude/.specs/brainstorming-oauth-auth-1801261458.md`
+Output: `.specs/brainstorming-oauth-auth-1801261458.md`
 
 ### 2. Implement Spec (Consumer)
 
 ```bash
 # By file path
-/implementing .claude/.specs/brainstorming-oauth-auth-1801261458.md
+/implementing .specs/brainstorming-oauth-auth-1801261458.md
 
 # By natural language
 /implementing implement the oauth authentication
@@ -167,7 +167,7 @@ flowchart TB
 
 **Input modes**:
 
-- File reference: `/implementing .claude/.specs/spec-file.md`
+- File reference: `/implementing .specs/spec-file.md`
 - Natural language: `/implementing implement auth feature`
 
 ## Utility Skills
@@ -188,8 +188,8 @@ flowchart TB
 ## Directory Structure
 
 ```
+.specs/              # Spec files from producer skills (at root)
 .claude/
-├── .specs/          # Spec files from producer skills
 ├── skills/          # Skill definitions
 │   ├── brainstorming/
 │   ├── debugging/
@@ -230,10 +230,10 @@ sequenceDiagram
 /brainstorming add payment processing with Stripe
 
 # 2. Review generated spec
-# → .claude/.specs/brainstorming-stripe-payment-1801261500.md
+# → .specs/brainstorming-stripe-payment-1801261500.md
 
 # 3. Implement the spec
-/implementing .claude/.specs/brainstorming-stripe-payment-1801261500.md
+/implementing .specs/brainstorming-stripe-payment-1801261500.md
 
 # 4. Claude creates plan → User approves → Code implemented
 ```
