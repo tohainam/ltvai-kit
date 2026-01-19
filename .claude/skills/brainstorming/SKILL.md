@@ -9,6 +9,7 @@ description: |
   Produces specification files in .specs/ containing architecture diagrams (Mermaid),
   data models, API contracts, and implementation task lists. Supports Autonomous and
   Collaborative modes with numbered phases (0-5) and explicit gate criteria.
+disable-model-invocation: true
 ---
 
 # Brainstorming Skill

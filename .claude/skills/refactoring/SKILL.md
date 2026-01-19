@@ -8,6 +8,7 @@ description: |
   Produces refactoring specification files in .specs/ containing Current Smells,
   Target Patterns, and Step-by-step Migration Plan with Characterization Tests.
   Supports Autonomous and Collaborative modes with numbered phases (0-5) and explicit gate criteria.
+disable-model-invocation: true
 ---
 
 # Refactoring Skill
@@ -246,7 +247,7 @@ Launch Task with subagent_type="scouter":
 
 Each finding must follow this format:
 
-```markdown
+````markdown
 ### {TRACK}-{NUMBER}: {Smell Name}
 
 **Severity**: CRITICAL | HIGH | MEDIUM | LOW
@@ -256,11 +257,14 @@ Each finding must follow this format:
 {What the smell is and why it's problematic}
 
 **Code Example**:
+
 ```{language}
 {relevant code snippet}
 ```
+````
 
 **Recommended Pattern**: {pattern name from references/refactoring-patterns.md}
+
 ```
 
 ### Smell Detection Summary Format
@@ -268,13 +272,15 @@ Each finding must follow this format:
 **ALWAYS display detection summary using this format:**
 
 ```
+
 ---
+
 PHASE 2: SMELL DETECTION - SUMMARY
 
 Agents Deployed: 5/5
 
 | Track | Findings | Critical | High | Medium | Low |
-|-------|----------|----------|------|--------|-----|
+| ----- | -------- | -------- | ---- | ------ | --- |
 | STR   | {n}      | {n}      | {n}  | {n}    | {n} |
 | ABS   | {n}      | {n}      | {n}  | {n}    | {n} |
 | NAM   | {n}      | {n}      | {n}  | {n}    | {n} |
@@ -283,13 +289,14 @@ Agents Deployed: 5/5
 | Total | {n}      | {n}      | {n}  | {n}    | {n} |
 
 Top Priority Smells:
+
 1. {TRACK-ID}: {smell name} [{severity}]
 2. {TRACK-ID}: {smell name} [{severity}]
 3. {TRACK-ID}: {smell name} [{severity}]
 
-Complexity Confirmation: {simple/complex}
----
-```
+## Complexity Confirmation: {simple/complex}
+
+````
 
 ### Exit Actions
 
@@ -327,7 +334,7 @@ Complexity Confirmation: {simple/complex}
 | Test Failures      | {level}    | {level}| {strategy} |
 | Performance Impact | {level}    | {level}| {strategy} |
 | Rollback Complexity| {level}    | {level}| {strategy} |
-```
+````
 
 **STEP 2**: Analyze breaking changes
 
@@ -384,11 +391,11 @@ Map each significant smell to a target pattern:
 ```markdown
 ### Current Smells Summary
 
-| Priority | ID      | Smell           | Target Pattern |
-| -------- | ------- | --------------- | -------------- |
-| 1        | {id}    | {smell name}    | {pattern}      |
-| 2        | {id}    | {smell name}    | {pattern}      |
-| 3        | {id}    | {smell name}    | {pattern}      |
+| Priority | ID   | Smell        | Target Pattern |
+| -------- | ---- | ------------ | -------------- |
+| 1        | {id} | {smell name} | {pattern}      |
+| 2        | {id} | {smell name} | {pattern}      |
+| 3        | {id} | {smell name} | {pattern}      |
 ```
 
 **STEP 2**: Generate refactoring options (minimum 2)
@@ -419,10 +426,10 @@ Map each significant smell to a target pattern:
 
 **STEP 3**: Evaluate trade-offs
 
-| Option | Effort | Risk | Benefit | Score (1-10) |
-|--------|--------|------|---------|--------------|
-| REFACTOR-001 | {est} | {level} | {benefit} | {score} |
-| REFACTOR-002 | {est} | {level} | {benefit} | {score} |
+| Option       | Effort | Risk    | Benefit   | Score (1-10) |
+| ------------ | ------ | ------- | --------- | ------------ |
+| REFACTOR-001 | {est}  | {level} | {benefit} | {score}      |
+| REFACTOR-002 | {est}  | {level} | {benefit} | {score}      |
 
 **STEP 4**: Select recommended option
 
@@ -503,11 +510,13 @@ Map each significant smell to a target pattern:
 ### Rollback Plan
 
 **Trigger Conditions**:
+
 - Test failures > threshold
 - Performance degradation detected
 - Critical bugs in production
 
 **Rollback Steps**:
+
 1. {Step to disable/revert changes}
 2. {Step to restore old behavior}
 3. {Step to verify rollback}
@@ -515,7 +524,7 @@ Map each significant smell to a target pattern:
 
 **STEP 3**: Generate characterization test skeleton
 
-```markdown
+````markdown
 ### Characterization Test Skeleton
 
 ```{language}
@@ -545,8 +554,10 @@ describe('{Component under test}', () => {
   });
 });
 ```
+````
 
 **Test Status**: GREEN (should PASS before AND after refactoring)
+
 ```
 
 **STEP 4**: Update spec file status to `complete`
@@ -567,6 +578,7 @@ describe('{Component under test}', () => {
 **ALWAYS display this summary after Phase 5 completion:**
 
 ```
+
 ========================================
 REFACTORING COMPLETE: {Smell Type} Analysis
 ========================================
@@ -583,17 +595,18 @@ Summary:
 Smells Detected:
 | Track | Count | Critical | High |
 |-------|-------|----------|------|
-| STR   | {n}   | {n}      | {n}  |
-| ABS   | {n}   | {n}      | {n}  |
-| NAM   | {n}   | {n}      | {n}  |
-| PAT   | {n}   | {n}      | {n}  |
-| DEP   | {n}   | {n}      | {n}  |
+| STR | {n} | {n} | {n} |
+| ABS | {n} | {n} | {n} |
+| NAM | {n} | {n} | {n} |
+| PAT | {n} | {n} | {n} |
+| DEP | {n} | {n} | {n} |
 
 Complexity: {simple/complex} (Score: {0-10})
 
 ---
 
 Recommended Strategy:
+
 - REFACTOR-001: {title}
   Approach: {extract/move/rename/redesign}
   Pattern: {target pattern}
@@ -603,6 +616,7 @@ Recommended Strategy:
 ---
 
 Migration Plan:
+
 - Type: {Direct Refactoring / 3-Phase Migration}
 - Steps: {N} total
 - Characterization Tests: Provided (GREEN status)
@@ -612,19 +626,20 @@ Migration Plan:
 Next Steps:
 
 Option A - Implement refactoring:
-  /implementing .specs/refactoring-{slug}-{timestamp}.md
+/implementing .specs/refactoring-{slug}-{timestamp}.md
 
 Option B - Review specification:
-  Open the spec file for detailed analysis
+Open the spec file for detailed analysis
 
 Option C - Request changes:
-  Ask for alternative strategies or more analysis
+Ask for alternative strategies or more analysis
 
 ========================================
 IMPORTANT: Refactoring NOT implemented.
 This is a specification document only.
 Review the spec file before proceeding.
 ========================================
+
 ```
 
 ---
@@ -634,23 +649,28 @@ Review the spec file before proceeding.
 ### Autonomous Mode
 
 ```
+
 Phase 0: Create spec, ask mode selection → wait for response
 Phase 1: Complete scope analysis → proceed automatically
 Phase 2: Launch agents, synthesize → checkpoint: present smell detection summary
 Phase 3: Complete impact assessment → proceed automatically
 Phase 4: Complete strategy selection → checkpoint: present recommended strategy
 Phase 5: Generate plan → show final summary
+
 ```
 
 ### Collaborative Mode
 
 ```
+
 After EVERY phase:
+
 1. Summarize what was accomplished
 2. Present key findings
 3. Ask clarifying questions if needed
 4. Wait for user confirmation: "Ready to proceed to Phase {N+1}?"
 5. Only proceed after user confirms
+
 ```
 
 ---
@@ -661,3 +681,4 @@ After EVERY phase:
 - **references/smell-catalog.md**: Code smell categories and detection criteria
 - **references/refactoring-patterns.md**: Pattern catalog with application guides
 - **references/gate-criteria.md**: Detailed gate requirements for each phase
+```

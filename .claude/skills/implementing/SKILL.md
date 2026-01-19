@@ -1,3 +1,16 @@
+---
+name: implementing
+description: |
+  Consumer skill for executing specifications from producer skills (brainstorming, debugging, refactoring, reviewing).
+  Use when: (1) User has a completed spec file from a producer skill, (2) User wants to implement
+  features/fixes from specifications, (3) User explicitly invokes /implementing command.
+
+  Executes specifications through 4 phases: Detection & Parse → Plan → Execute → Verify.
+  Uses EnterPlanMode for implementation planning with user approval gates. Supports file reference
+  mode and natural language mode for spec selection. Includes quality checks (format, lint, build).
+disable-model-invocation: true
+---
+
 # Implementing Skill
 
 ## CRITICAL CONSTRAINTS

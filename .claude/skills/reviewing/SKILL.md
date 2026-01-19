@@ -8,6 +8,7 @@ description: |
   Produces review reports in .specs/ with multi-dimension scoring,
   severity-categorized findings, and actionable recommendations. Supports Autonomous
   and Collaborative modes with numbered phases (0-5) and explicit gate criteria.
+disable-model-invocation: true
 ---
 
 # Reviewing Skill

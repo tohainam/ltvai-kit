@@ -8,6 +8,7 @@ description: |
   Produces debugging specification files in .specs/ containing Root Cause Analysis (RCA),
   Reproduction Steps, and Fix Strategy. Supports Autonomous and Collaborative modes with numbered
   phases (0-5) and explicit gate criteria.
+disable-model-invocation: true
 ---
 
 # Debugging Skill
@@ -473,10 +474,10 @@ Apply 6Ms analysis adapted for software:
 ```markdown
 ### Risk Assessment
 
-| Risk           | Likelihood   | Impact       | Mitigation   |
-| -------------- | ------------ | ------------ | ------------ |
-| {risk 1}       | LOW/MED/HIGH | LOW/MED/HIGH | {mitigation} |
-| {risk 2}       | LOW/MED/HIGH | LOW/MED/HIGH | {mitigation} |
+| Risk     | Likelihood   | Impact       | Mitigation   |
+| -------- | ------------ | ------------ | ------------ |
+| {risk 1} | LOW/MED/HIGH | LOW/MED/HIGH | {mitigation} |
+| {risk 2} | LOW/MED/HIGH | LOW/MED/HIGH | {mitigation} |
 
 **Overall Fix Risk**: LOW | MEDIUM | HIGH
 ```
