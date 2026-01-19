@@ -1,7 +1,7 @@
 {
   "name": "ltvai-kit-cli",
   "version": "1.0.0",
-  "description": "CLI tool to setup LTVAI Kit configuration for Claude Code and Antigravity",
+  "description": "CLI tool to setup LTVAI Kit configuration for Claude Code and GitHub Copilot Chat",
   "type": "module",
   "bin": {
     "ltvai-kit-cli": "./dist/index.js"
@@ -17,7 +17,8 @@
     "cli",
     "ltvai",
     "claude-code",
-    "antigravity",
+    "github-copilot",
+    "copilot-chat",
     "developer-tools",
     "configuration"
   ],

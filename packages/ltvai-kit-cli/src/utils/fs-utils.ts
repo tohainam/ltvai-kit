@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, cpSync, rmSync, readdirSync, statSync, chmodSync } from 'node:fs';
+import { existsSync, mkdirSync, cpSync, rmSync, readdirSync, statSync, chmodSync, copyFileSync as fsCopyFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { EXCLUDE_PATTERNS } from './constants.js';
 
@@ -134,4 +134,14 @@ export function listFiles(dir: string): string[] {
 
   walk(dir);
   return files;
+}
+
+/**
+ * Copy a single file
+ */
+export function copyFileSync(source: string, target: string): void {
+  const { dirname } = require('node:path');
+  const dir = dirname(target);
+  ensureDir(dir);
+  fsCopyFileSync(source, target);
 }

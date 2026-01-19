@@ -8,8 +8,8 @@ export function getPlatformStrategy(platform: Platform): PlatformStrategy {
     case 'claude-code':
       // Lazy import to avoid circular dependencies
       return require('./claude-code.js').claudeCodeStrategy;
-    case 'antigravity':
-      return require('./antigravity.js').antigravityStrategy;
+    case 'copilot':
+      return require('./copilot-chat.js').copilotChatStrategy;
     default:
       throw new Error(`Unknown platform: ${platform}`);
   }
@@ -20,6 +20,6 @@ export function getPlatformStrategy(platform: Platform): PlatformStrategy {
  */
 export function getAvailablePlatforms(): PlatformStrategy[] {
   const { claudeCodeStrategy } = require('./claude-code.js');
-  const { antigravityStrategy } = require('./antigravity.js');
-  return [claudeCodeStrategy, antigravityStrategy];
+  const { copilotChatStrategy } = require('./copilot-chat.js');
+  return [claudeCodeStrategy, copilotChatStrategy];
 }

@@ -37,9 +37,9 @@ export async function askPlatforms(): Promise<Platform[]> {
         hint: 'Recommended',
       },
       {
-        value: 'antigravity' as Platform,
-        label: 'Antigravity (.agent)',
-        hint: 'Coming soon',
+        value: 'copilot' as Platform,
+        label: 'GitHub Copilot Chat (.vscode, .github)',
+        hint: 'Prompts & MCP',
       },
     ],
     initialValues: ['claude-code'] as Platform[],

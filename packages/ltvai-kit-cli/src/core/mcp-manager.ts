@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { MCPConfig, PlatformStrategy } from '../types/index.js';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { MCPConfig, CopilotMCPConfig, PlatformStrategy } from '../types/index.js';
 import { pathExists } from '../utils/fs-utils.js';
 import { logInfo, logSuccess, logWarning } from '../ui/prompts.js';
 
@@ -32,12 +32,77 @@ export function writeMCPConfig(filePath: string, config: MCPConfig, dry: boolean
   }
 
   try {
+    // Ensure directory exists
+    const dir = dirname(filePath);
+    if (!pathExists(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
+
     const content = JSON.stringify(config, null, 2);
     writeFileSync(filePath, content, 'utf-8');
     logSuccess(`Written MCP config to ${filePath}`);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to write MCP config: ${errorMessage}`);
+  }
+}
+
+/**
+ * Transform Claude Code MCP config to Copilot format
+ * Claude Code uses: { mcpServers: { ... } }
+ * Copilot uses: { servers: { ... } }
+ */
+function transformToCopilotFormat(config: MCPConfig): CopilotMCPConfig {
+  return {
+    servers: { ...config.mcpServers },
+  };
+}
+
+/**
+ * Read Copilot MCP config and convert to internal format
+ */
+export function readCopilotMCPConfig(filePath: string): MCPConfig {
+  if (!pathExists(filePath)) {
+    return { mcpServers: {} };
+  }
+
+  try {
+    const content = readFileSync(filePath, 'utf-8');
+    const copilotConfig = JSON.parse(content) as CopilotMCPConfig;
+    return {
+      mcpServers: copilotConfig.servers || {},
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to read Copilot MCP config: ${errorMessage}`);
+  }
+}
+
+/**
+ * Write Copilot MCP config (with Copilot-specific format)
+ */
+export function writeCopilotMCPConfig(filePath: string, config: MCPConfig, dry: boolean = false): void {
+  const copilotConfig = transformToCopilotFormat(config);
+
+  if (dry) {
+    logInfo(`[DRY RUN] Would write Copilot MCP config to ${filePath}`);
+    logInfo(`[DRY RUN] Servers: ${Object.keys(copilotConfig.servers).join(', ')}`);
+    return;
+  }
+
+  try {
+    // Ensure directory exists
+    const dir = dirname(filePath);
+    if (!pathExists(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
+
+    const content = JSON.stringify(copilotConfig, null, 2);
+    writeFileSync(filePath, content, 'utf-8');
+    logSuccess(`Written Copilot MCP config to ${filePath}`);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to write Copilot MCP config: ${errorMessage}`);
   }
 }
 
@@ -104,12 +169,23 @@ export async function setupMCPConfig(
   // Determine target path
   const targetPath = join(targetDir, strategy.mcpConfigPath);
 
-  // Check for existing config
-  if (pathExists(targetPath)) {
-    const existingConfig = readMCPConfig(targetPath);
-    const mergedConfig = mergeMCPConfigs(existingConfig, transformedConfig);
-    writeMCPConfig(targetPath, mergedConfig, dry);
+  // Handle Copilot differently (uses different JSON format)
+  if (strategy.name === 'copilot') {
+    if (pathExists(targetPath)) {
+      const existingConfig = readCopilotMCPConfig(targetPath);
+      const mergedConfig = mergeMCPConfigs(existingConfig, transformedConfig);
+      writeCopilotMCPConfig(targetPath, mergedConfig, dry);
+    } else {
+      writeCopilotMCPConfig(targetPath, transformedConfig, dry);
+    }
   } else {
-    writeMCPConfig(targetPath, transformedConfig, dry);
+    // Check for existing config
+    if (pathExists(targetPath)) {
+      const existingConfig = readMCPConfig(targetPath);
+      const mergedConfig = mergeMCPConfigs(existingConfig, transformedConfig);
+      writeMCPConfig(targetPath, mergedConfig, dry);
+    } else {
+      writeMCPConfig(targetPath, transformedConfig, dry);
+    }
   }
 }

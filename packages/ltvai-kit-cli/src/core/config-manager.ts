@@ -3,7 +3,7 @@ import { Platform, InitOptions, UpdateOptions } from '../types/index.js';
 import { cloneRepo, cleanupTempDir, isGitAvailable } from './git-manager.js';
 import { getAvailableMCPServers, setupMCPConfig } from './mcp-manager.js';
 import { claudeCodeStrategy } from '../strategies/claude-code.js';
-import { antigravityStrategy } from '../strategies/antigravity.js';
+import { copilotChatStrategy } from '../strategies/copilot-chat.js';
 import { pathExists, createBackup, ensureDir } from '../utils/fs-utils.js';
 import { runTasks } from '../ui/spinner.js';
 import {
@@ -25,8 +25,8 @@ function getStrategy(platform: Platform) {
   switch (platform) {
     case 'claude-code':
       return claudeCodeStrategy;
-    case 'antigravity':
-      return antigravityStrategy;
+    case 'copilot':
+      return copilotChatStrategy;
     default:
       throw new Error(`Unknown platform: ${platform}`);
   }

@@ -1,7 +1,7 @@
 /**
  * Supported platforms for configuration
  */
-export type Platform = 'claude-code' | 'antigravity';
+export type Platform = 'claude-code' | 'copilot';
 
 /**
  * CLI options from command line flags
@@ -40,10 +40,28 @@ export interface MCPServerConfig {
 }
 
 /**
- * MCP configuration file structure
+ * MCP configuration file structure (Claude Code format)
  */
 export interface MCPConfig {
   mcpServers: Record<string, MCPServerConfig>;
+}
+
+/**
+ * MCP Input configuration (Copilot format)
+ */
+export interface CopilotMCPInput {
+  type: 'promptString';
+  id: string;
+  description: string;
+  password?: boolean;
+}
+
+/**
+ * MCP configuration file structure (Copilot format)
+ */
+export interface CopilotMCPConfig {
+  inputs?: CopilotMCPInput[];
+  servers: Record<string, MCPServerConfig>;
 }
 
 /**
